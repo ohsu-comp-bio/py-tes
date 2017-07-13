@@ -5,11 +5,11 @@ import requests
 
 from urlparse import urlparse
 
-from .models import (Task, ListTasksRequest, ListTaskResponse, ServiceInfo)
+from .models import (Task, ListTasksRequest, ListTasksResponse, ServiceInfo)
 from .utils import json2obj
 
 
-class TESClient:
+class HTTPClient:
 
     def __init__(self, url, timeout=10):
         self.url = urlparse(url).geturl()
@@ -65,7 +65,7 @@ class TESClient:
             timeout=self.timeout
         )
         response.raise_for_status()
-        return json2obj(response.json(), ListTaskResponse)
+        return json2obj(response.json(), ListTasksResponse)
 
     def wait(self, task_id, timeout=None):
         def check_success(data):
