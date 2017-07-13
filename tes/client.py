@@ -53,11 +53,15 @@ class HTTPClient:
         response.raise_for_status()
         return
 
-    def list_tasks(self, req):
-        if req.isinstance(ListTasksRequest):
-            msg = req.as_dict()
-        else:
-            raise TypeError("Expected ListTasksRequest instance")
+    def list_tasks(self, view="MINIMAL", page_size=None, page_token=None):
+        req = ListTasksRequest(
+            view=view,
+            page_size=page_size,
+            page_token=page_token,
+            name_prefix=None,
+            project=None
+        )
+        msg = req.as_dict()
 
         response = requests.get(
             "%s/v1/tasks" % (self.url),
