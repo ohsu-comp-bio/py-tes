@@ -12,8 +12,7 @@ from .utils import json2obj
 class TESClient:
 
     def __init__(self, url, timeout=10):
-        n = urlparse(url)
-        self.url = n.geturl()
+        self.url = urlparse(url).geturl()
         self.timeout = timeout
 
     def get_service_info(self):
@@ -35,16 +34,6 @@ class TESClient:
             timeout=self.timeout
         )
         return response.json()["id"]
-
-    def wait(self, task_id, timeout=30):
-        def check_success(data):
-            return data["state"] not in ["QUEUED", "RUNNING", "INITIALIZING"]
-        return polling.poll(
-            lambda: self.get_task(task_id, "MINIMAL"),
-            check_success=check_success,
-            timeout=timeout,
-            step=0.1
-        )
 
     def get_task(self, task_id, view):
         payload = {"view": view}
@@ -77,3 +66,20 @@ class TESClient:
         )
         response.raise_for_status()
         return json2obj(response.json(), ListTaskResponse)
+
+    def wait(self, task_id, timeout=None):
+        def check_success(data):
+            return data["state"] not in ["QUEUED", "RUNNING", "INITIALIZING"]
+        if timeout is not None:
+            return polling.poll(
+                lambda: self.get_task(task_id, "MINIMAL"),
+                check_success=check_success,
+                timeout=timeout,
+                step=0.1
+            )
+        return polling.poll(
+            lambda: self.get_task(task_id, "MINIMAL"),
+            check_success=check_success,
+            step=0.1,
+            poll_forever=True
+        )

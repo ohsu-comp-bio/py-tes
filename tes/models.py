@@ -1,7 +1,7 @@
 from __future__ import print_function
 
 import attr
-import simplejson as json
+import json
 
 from attr import attrs, attrib
 from attr.validators import instance_of, optional, in_
@@ -68,11 +68,11 @@ class Base(object):
 
 @attrs
 class TaskParameter(Base):
+    url = attrib(default=None, validator=optional(instance_of(str)))
+    path = attrib(default=None, validator=optional(instance_of(str)))
+    type = attrib(default="FILE", validator=in_(["FILE", "DIRECTORY"]))
     name = attrib(default=None, validator=optional(instance_of(str)))
     description = attrib(default=None, validator=optional(instance_of(str)))
-    url = attrib(validator=instance_of(str))
-    path = attrib(validator=instance_of(str))
-    type = attrib(validator=in_(["FILE", "DIRECTORY"]))
     contents = attrib(default=None, validator=optional(instance_of(str)))
 
 
@@ -91,8 +91,8 @@ class Resources(Base):
 
 @attrs
 class Ports(Base):
-    host = attrib(validator=instance_of(int))
     container = attrib(validator=instance_of(int))
+    host = attrib(default=0, validator=instance_of(int))
 
 
 @attrs
@@ -153,6 +153,37 @@ class Task(Base):
     volumes = attrib(default=None, validator=optional(list_of(str)))
     tags = attrib(default=None, validator=optional(instance_of(dict)))
     logs = attrib(default=None, validator=optional(list_of(TaskLog)))
+
+    def is_valid(self):
+        if self.executors is None:
+            return False, TypeError("executors NoneType")
+        elif self.executors.environ is not None:
+            for k, v in self.executors.environ:
+                if not isinstance(k, str) and not isinstance(k, str):
+                    return False, TypeError(
+                        "keys and values of environ must be StrType"
+                    )
+
+        if self.inputs is not None:
+            if self.inputs.url is None and self.inputs.contents is None:
+                return False, TypeError(
+                        "TaskParameter url must be provided"
+                    )
+            elif self.inputs.url is not None and self.inputs.contents is not None:
+                return False, TypeError(
+                        "TaskParameter url and contents are mutually exclusive"
+                    )
+
+        if self.outputs is not None:
+            if self.outputs.url is None:
+                return False, TypeError(
+                        "TaskParameter url must be provided"
+                    )
+            if self.outputs.contents is not None:
+                return False, TypeError(
+                        "Output TaskParameter instances do not have contents"
+                    )
+        return True, None
 
 
 @attrs

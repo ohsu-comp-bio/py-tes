@@ -1,4 +1,4 @@
-import simplejson as json
+import json
 import re
 
 first_cap_re = re.compile('(.)([A-Z][a-z]+)')
@@ -19,7 +19,7 @@ def json2obj(j, o, convert_camel_case=True):
         raise TypeError("j must be a str or dict")
     if convert_camel_case:
         d = {}
-        for k, v in m.iteritems():
+        for k, v in m.items():
             d[camel_to_snake(k)] = v
         return o(**d)
     else:
