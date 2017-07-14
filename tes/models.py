@@ -1,9 +1,8 @@
-from __future__ import print_function
+from __future__ import absolute_import, print_function
 
-import attr
 import json
 
-from attr import attrs, attrib
+from attr import asdict, attrs, attrib
 from attr.validators import instance_of, optional, in_
 
 
@@ -53,16 +52,14 @@ def _drop_none(obj):
 class Base(object):
 
     def as_dict(self, drop_empty=True):
-        obj = attr.asdict(self)
+        obj = asdict(self)
         if drop_empty:
                 return _drop_none(obj)
         return obj
 
-    def as_json(self, drop_empty=True, sort_keys=True, indent=None):
+    def as_json(self, drop_empty=True):
         return json.dumps(
-            self.as_dict(drop_empty),
-            sort_keys=sort_keys,
-            indent=indent
+            self.as_dict(drop_empty)
         )
 
 

@@ -1,38 +1,49 @@
-from __future__ import print_function
+from __future__ import absolute_import, print_function
 
+import json
 import polling
 import requests
 
+from attr import attrs, attrib
+from attr.validators import instance_of
 from urlparse import urlparse
 
-from .models import (Task, ListTasksRequest, ListTasksResponse, ServiceInfo)
-from .utils import json2obj
+from tes.models import (Task, ListTasksRequest, ListTasksResponse, ServiceInfo)
+from tes.utils import json2obj
 
 
-class HTTPClient:
+@attrs
+class HTTPClient(object):
+    url = attrib()
+    timeout = attrib(default=10, validator=instance_of(int))
 
-    def __init__(self, url, timeout=10):
-        self.url = urlparse(url).geturl()
-        self.timeout = timeout
+    @url.validator
+    def check_url(self, attribute, value):
+        u = urlparse(value)
+        if u.scheme not in ["http", "https"]:
+            raise ValueError(
+                "Unsupported URL scheme - must be one of %s" % (["http", "https"])
+            )
 
     def get_service_info(self):
         response = requests.get(
             "%s/v1/tasks/service-info" % (self.url),
             timeout=self.timeout
         )
+        response.raise_for_status()
         return json2obj(response.json(), ServiceInfo)
 
     def create_task(self, task):
-        if task.isinstance(Task):
+        if isinstance(task, Task):
             msg = task.as_dict()
         else:
             raise TypeError("Expected Task instance")
-
         response = requests.post(
             "%s/v1/tasks" % (self.url),
             data=msg,
             timeout=self.timeout
         )
+        response.raise_for_status()
         return response.json()["id"]
 
     def get_task(self, task_id, view):
