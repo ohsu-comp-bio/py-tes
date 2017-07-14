@@ -1,6 +1,5 @@
 from __future__ import absolute_import, print_function
 
-import json
 import polling
 import requests
 
@@ -9,7 +8,7 @@ from attr.validators import instance_of
 from urlparse import urlparse
 
 from tes.models import (Task, ListTasksRequest, ListTasksResponse, ServiceInfo)
-from tes.utils import json2obj
+from tes.utils import json2obj, raise_for_status
 
 
 @attrs
@@ -30,12 +29,12 @@ class HTTPClient(object):
             "%s/v1/tasks/service-info" % (self.url),
             timeout=self.timeout
         )
-        response.raise_for_status()
+        raise_for_status(response)
         return json2obj(response.json(), ServiceInfo)
 
     def create_task(self, task):
         if isinstance(task, Task):
-            msg = task.as_dict()
+            msg = task.as_json()
         else:
             raise TypeError("Expected Task instance")
         response = requests.post(
@@ -43,8 +42,8 @@ class HTTPClient(object):
             data=msg,
             timeout=self.timeout
         )
-        response.raise_for_status()
-        return response.json()["id"]
+        raise_for_status(response)
+        return str(response.json()["id"])
 
     def get_task(self, task_id, view):
         payload = {"view": view}
@@ -53,7 +52,7 @@ class HTTPClient(object):
             params=payload,
             timeout=self.timeout
         )
-        response.raise_for_status()
+        raise_for_status(response)
         return json2obj(response.json(), Task)
 
     def cancel_task(self, task_id):
@@ -61,7 +60,7 @@ class HTTPClient(object):
             "%s/v1/tasks/%s:cancel" % (self.url, task_id),
             timeout=self.timeout
         )
-        response.raise_for_status()
+        raise_for_status(response)
         return
 
     def list_tasks(self, view="MINIMAL", page_size=None, page_token=None):
@@ -79,7 +78,7 @@ class HTTPClient(object):
             params=msg,
             timeout=self.timeout
         )
-        response.raise_for_status()
+        raise_for_status(response)
         return json2obj(response.json(), ListTasksResponse)
 
     def wait(self, task_id, timeout=None):
