@@ -133,7 +133,9 @@ class TaskLog(Base):
 
 @attrs
 class Task(Base):
-    id = attrib(default=None, validator=optional(instance_of(str)))
+    id = attrib(
+        default=None, convert=str, validator=optional(instance_of(str))
+    )
     state = attrib(default=None, validator=optional(in_(
         ["UKNOWN", "QUEUED", "INITIALIZING", "RUNNING", "COMPLETE",
          "PAUSED", "CANCELED", "ERROR", "SYSTEM_ERROR"]

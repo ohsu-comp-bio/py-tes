@@ -83,7 +83,7 @@ class HTTPClient(object):
 
     def wait(self, task_id, timeout=None):
         def check_success(data):
-            return data["state"] not in ["QUEUED", "RUNNING", "INITIALIZING"]
+            return data.state not in ["QUEUED", "RUNNING", "INITIALIZING"]
         if timeout is not None:
             return polling.poll(
                 lambda: self.get_task(task_id, "MINIMAL"),
