@@ -5,5 +5,4 @@
 py-tes
 ======
 
-_py-tes_ is a library for interacting with servers implementing the [GA4GH Task 
-Execution Schema](https://github.com/ga4gh/task-execution-schemas).
+_py-tes_ is a library for interacting with servers implementing the [GA4GH Task Execution Schema](https://github.com/ga4gh/task-execution-schemas).
