@@ -24,6 +24,7 @@ setup(
         "attrs>=17.2.0",
         "polling>=0.3.0",
         "requests>=2.18.1",
+        "PyYAML>=3.12"
     ],
     zip_safe=True
 )

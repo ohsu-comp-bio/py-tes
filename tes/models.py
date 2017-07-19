@@ -65,25 +65,43 @@ class Base(object):
 
 @attrs
 class TaskParameter(Base):
-    url = attrib(default=None, validator=optional(instance_of(str)))
-    path = attrib(default=None, validator=optional(instance_of(str)))
-    type = attrib(default="FILE", validator=in_(["FILE", "DIRECTORY"]))
-    name = attrib(default=None, validator=optional(instance_of(str)))
-    description = attrib(default=None, validator=optional(instance_of(str)))
-    contents = attrib(default=None, validator=optional(instance_of(str)))
+    url = attrib(
+        default=None, validator=optional(instance_of((str, unicode)))
+    )
+    path = attrib(
+        default=None, validator=optional(instance_of((str, unicode)))
+    )
+    type = attrib(
+        default="FILE", validator=in_(["FILE", "DIRECTORY"])
+    )
+    name = attrib(
+        default=None, validator=optional(instance_of((str, unicode)))
+    )
+    description = attrib(
+        default=None, validator=optional(instance_of((str, unicode)))
+    )
+    contents = attrib(
+        default=None, validator=optional(instance_of((str, unicode)))
+    )
 
 
 @attrs
 class Resources(Base):
-    cpu_cores = attrib(default=None, validator=optional(instance_of(int)))
+    cpu_cores = attrib(
+        default=None, validator=optional(instance_of(int))
+    )
     ram_gb = attrib(
         default=None, validator=optional(instance_of((float, int)))
     )
     size_gb = attrib(
         default=None, validator=optional(instance_of((float, int)))
     )
-    preemptible = attrib(default=None, validator=optional(instance_of(bool)))
-    zones = attrib(default=None, validator=optional(list_of(str)))
+    preemptible = attrib(
+        default=None, validator=optional(instance_of(bool))
+    )
+    zones = attrib(
+        default=None, validator=optional(list_of((str, unicode)))
+    )
 
 
 @attrs
@@ -94,92 +112,167 @@ class Ports(Base):
 
 @attrs
 class Executor(Base):
-    image_name = attrib(validator=instance_of(str))
-    cmd = attrib(validator=list_of(str))
-    work_dir = attrib(default=None, validator=optional(instance_of(str)))
-    stdin = attrib(default=None, validator=optional(instance_of(str)))
-    stdout = attrib(default=None, validator=optional(instance_of(str)))
-    stderr = attrib(default=None, validator=optional(instance_of(str)))
-    ports = attrib(default=None, validator=optional(list_of(Ports)))
-    environ = attrib(default=None, validator=optional(instance_of(dict)))
+    image_name = attrib(
+        validator=instance_of((str, unicode))
+    )
+    cmd = attrib(
+        validator=list_of((str, unicode))
+    )
+    work_dir = attrib(
+        default=None, validator=optional(instance_of((str, unicode)))
+    )
+    stdin = attrib(
+        default=None, validator=optional(instance_of((str, unicode)))
+    )
+    stdout = attrib(
+        default=None, validator=optional(instance_of((str, unicode)))
+    )
+    stderr = attrib(
+        default=None, validator=optional(instance_of((str, unicode)))
+    )
+    ports = attrib(
+        default=None, validator=optional(list_of(Ports))
+    )
+    environ = attrib(
+        default=None, validator=optional(instance_of(dict))
+    )
 
 
 @attrs
 class ExecutorLog(Base):
-    start_time = attrib(default=None, validator=optional(instance_of(str)))
-    end_time = attrib(default=None, validator=optional(instance_of(str)))
-    stdout = attrib(default=None, validator=optional(instance_of(str)))
-    stderr = attrib(default=None, validator=optional(instance_of(str)))
-    exit_code = attrib(default=None, validator=optional(instance_of(int)))
-    host_ip = attrib(default=None, validator=optional(instance_of(str)))
-    ports = attrib(default=None, validator=optional(list_of(Ports)))
+    start_time = attrib(
+        default=None, validator=optional(instance_of((str, unicode)))
+    )
+    end_time = attrib(
+        default=None, validator=optional(instance_of((str, unicode)))
+    )
+    stdout = attrib(
+        default=None, validator=optional(instance_of((str, unicode)))
+    )
+    stderr = attrib(
+        default=None, validator=optional(instance_of((str, unicode)))
+    )
+    exit_code = attrib(
+        default=None, validator=optional(instance_of(int))
+    )
+    host_ip = attrib(
+        default=None, validator=optional(instance_of((str, unicode)))
+    )
+    ports = attrib(
+        default=None, validator=optional(list_of(Ports))
+    )
 
 
 @attrs
 class OutputFileLog(Base):
-    url = attrib(validator=instance_of(str))
-    path = attrib(validator=instance_of(str))
-    size_bytes = attrib(validator=instance_of(int))
+    url = attrib(
+        validator=instance_of((str, unicode))
+    )
+    path = attrib(
+        validator=instance_of((str, unicode))
+    )
+    size_bytes = attrib(
+        validator=instance_of(int)
+    )
 
 
 @attrs
 class TaskLog(Base):
-    start_time = attrib(default=None, validator=optional(instance_of(str)))
-    end_time = attrib(default=None, validator=optional(instance_of(str)))
-    metadata = attrib(default=None, validator=optional(instance_of(dict)))
-    logs = attrib(default=None, validator=optional(list_of(ExecutorLog)))
-    outputs = attrib(default=None, validator=optional(list_of(OutputFileLog)))
+    start_time = attrib(
+        default=None, validator=optional(instance_of((str, unicode)))
+    )
+    end_time = attrib(
+        default=None, validator=optional(instance_of((str, unicode)))
+    )
+    metadata = attrib(
+        default=None, validator=optional(instance_of(dict))
+    )
+    logs = attrib(
+        default=None, validator=optional(list_of(ExecutorLog))
+    )
+    outputs = attrib(
+        default=None, validator=optional(list_of(OutputFileLog))
+    )
 
 
 @attrs
 class Task(Base):
     id = attrib(
-        default=None, convert=str, validator=optional(instance_of(str))
+        default=None, validator=optional(instance_of((str, unicode)))
     )
-    state = attrib(default=None, validator=optional(in_(
-        ["UKNOWN", "QUEUED", "INITIALIZING", "RUNNING", "COMPLETE",
-         "PAUSED", "CANCELED", "ERROR", "SYSTEM_ERROR"]
-    )))
-    name = attrib(default=None, validator=optional(instance_of(str)))
-    project = attrib(default=None, validator=optional(instance_of(str)))
-    description = attrib(default=None, validator=optional(instance_of(str)))
-    inputs = attrib(default=None, validator=optional(list_of(TaskParameter)))
-    outputs = attrib(default=None, validator=optional(list_of(TaskParameter)))
+    state = attrib(
+        default=None,
+        validator=optional(in_(
+            ["UKNOWN", "QUEUED", "INITIALIZING", "RUNNING", "COMPLETE",
+             "PAUSED", "CANCELED", "ERROR", "SYSTEM_ERROR"]
+        ))
+    )
+    name = attrib(
+        default=None, validator=optional(instance_of((str, unicode)))
+    )
+    project = attrib(
+        default=None, validator=optional(instance_of((str, unicode)))
+    )
+    description = attrib(
+        default=None, validator=optional(instance_of((str, unicode)))
+    )
+    inputs = attrib(
+        default=None, validator=optional(list_of(TaskParameter))
+    )
+    outputs = attrib(
+        default=None, validator=optional(list_of(TaskParameter))
+    )
     resources = attrib(
         default=None, validator=optional(instance_of(Resources))
     )
-    executors = attrib(default=None, validator=optional(list_of(Executor)))
-    volumes = attrib(default=None, validator=optional(list_of(str)))
-    tags = attrib(default=None, validator=optional(instance_of(dict)))
-    logs = attrib(default=None, validator=optional(list_of(TaskLog)))
+    executors = attrib(
+        default=None, validator=optional(list_of(Executor))
+    )
+    volumes = attrib(
+        default=None, validator=optional(list_of((str, unicode)))
+    )
+    tags = attrib(
+        default=None, validator=optional(instance_of(dict))
+    )
+    logs = attrib(
+        default=None, validator=optional(list_of(TaskLog))
+    )
 
     def is_valid(self):
         if self.executors is None:
             return False, TypeError("executors NoneType")
-        elif self.executors.environ is not None:
-            for k, v in self.executors.environ:
-                if not isinstance(k, str) and not isinstance(k, str):
-                    return False, TypeError(
-                        "keys and values of environ must be StrType"
-                    )
+        else:
+            for e in self.executors:
+                if e.environ is not None:
+                    for k, v in self.executors.environ:
+                        if not isinstance(k, str) and not isinstance(k, str):
+                            return False, TypeError(
+                                "keys and values of environ must be StrType"
+                            )
 
         if self.inputs is not None:
-            if self.inputs.url is None and self.inputs.contents is None:
-                return False, TypeError(
+            for i in self.inputs:
+                if i.url is None and i.contents is None:
+                    return False, TypeError(
                         "TaskParameter url must be provided"
                     )
-            elif self.inputs.url is not None and self.inputs.contents is not None:
-                return False, TypeError(
+                if i.url is not None and i.contents is not None:
+                    return False, TypeError(
                         "TaskParameter url and contents are mutually exclusive"
+                    )
+                if i.url is None and i.path is None:
+                    return False, TypeError(
+                        "TaskParameter url and path must be provided"
                     )
 
         if self.outputs is not None:
-            if self.outputs.url is None:
-                return False, TypeError(
-                        "TaskParameter url must be provided"
+            for o in self.outputs:
+                if o.url is None or o.path is None:
+                    return False, TypeError(
+                        "TaskParameter url and path must be provided"
                     )
-            if self.outputs.contents is not None:
-                return False, TypeError(
+                if o.contents is not None:
+                    return False, TypeError(
                         "Output TaskParameter instances do not have contents"
                     )
         return True, None
@@ -187,7 +280,9 @@ class Task(Base):
 
 @attrs
 class GetTaskRequest(Base):
-    id = attrib(validator=instance_of(str))
+    id = attrib(
+        validator=instance_of((str, unicode))
+    )
     view = attrib(
         default=None, validator=optional(in_(["MINIMAL", "BASIC", "FULL"]))
     )
@@ -195,7 +290,9 @@ class GetTaskRequest(Base):
 
 @attrs
 class CreateTaskResponse(Base):
-    id = attrib(validator=instance_of(str))
+    id = attrib(
+        validator=instance_of((str, unicode))
+    )
 
 
 @attrs
@@ -205,14 +302,22 @@ class ServiceInfoRequest(Base):
 
 @attrs
 class ServiceInfo(Base):
-    name = attrib(default=None, validator=optional(instance_of(str)))
-    doc = attrib(default=None, validator=optional(instance_of(str)))
-    storage = attrib(default=None, validator=optional(list_of(str)))
+    name = attrib(
+        default=None, validator=optional(instance_of((str, unicode)))
+    )
+    doc = attrib(
+        default=None, validator=optional(instance_of((str, unicode)))
+    )
+    storage = attrib(
+        default=None, validator=optional(list_of((str, unicode)))
+    )
 
 
 @attrs
 class CancelTaskRequest(Base):
-    id = attrib(validator=instance_of(str))
+    id = attrib(
+        validator=instance_of((str, unicode))
+    )
 
 
 @attrs
@@ -222,10 +327,18 @@ class CancelTaskResponse(Base):
 
 @attrs
 class ListTasksRequest(Base):
-    project = attrib(default=None, validator=optional(instance_of(str)))
-    name_prefix = attrib(default=None, validator=optional(instance_of(str)))
-    page_size = attrib(default=None, validator=optional(instance_of(int)))
-    page_token = attrib(default=None, validator=optional(instance_of(str)))
+    project = attrib(
+        default=None, validator=optional(instance_of((str, unicode)))
+    )
+    name_prefix = attrib(
+        default=None, validator=optional(instance_of((str, unicode)))
+    )
+    page_size = attrib(
+        default=None, validator=optional(instance_of(int))
+    )
+    page_token = attrib(
+        default=None, validator=optional(instance_of((str, unicode)))
+    )
     view = attrib(
         default=None, validator=optional(in_(["MINIMAL", "BASIC", "FULL"]))
     )
@@ -233,7 +346,9 @@ class ListTasksRequest(Base):
 
 @attrs
 class ListTasksResponse(Base):
-    tasks = attrib(validator=list_of(Task))
+    tasks = attrib(
+        validator=list_of(Task)
+    )
     next_page_token = attrib(
-        default=None, validator=optional(instance_of(str))
+        default=None, validator=optional(instance_of((str, unicode)))
     )

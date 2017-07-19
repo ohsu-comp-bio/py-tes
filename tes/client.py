@@ -45,7 +45,7 @@ class HTTPClient(object):
         raise_for_status(response)
         return str(response.json()["id"])
 
-    def get_task(self, task_id, view):
+    def get_task(self, task_id, view="BASIC"):
         payload = {"view": view}
         response = requests.get(
             "%s/v1/tasks/%s" % (self.url, task_id),
