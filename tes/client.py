@@ -21,7 +21,8 @@ class HTTPClient(object):
         u = urlparse(value)
         if u.scheme not in ["http", "https"]:
             raise ValueError(
-                "Unsupported URL scheme - must be one of %s" % (["http", "https"])
+                "Unsupported URL scheme - must be one of %s"
+                % (["http", "https"])
             )
 
     def get_service_info(self):
