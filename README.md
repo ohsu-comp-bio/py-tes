@@ -1,5 +1,5 @@
 [![Build Status](https://travis-ci.org/ohsu-comp-bio/py-tes.svg?branch=master)](https://travis-ci.org/ohsu-comp-bio/py-tes)
-[![codecov](https://codecov.io/gh/ohsu-comp-bio/py-tes/branch/master/graph/badge.svg)](https://codecov.io/gh/ohsu-comp-bio/py-tes)
+[![Coverage Status](https://coveralls.io/repos/github/ohsu-comp-bio/py-tes/badge.svg?branch=master)](https://coveralls.io/github/ohsu-comp-bio/py-tes?branch=master)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 py-tes
