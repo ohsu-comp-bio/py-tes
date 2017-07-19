@@ -11,10 +11,7 @@ install:
 
 script: 
   - flake8 .
-  - python -m nose tests  \
-           --with-coverage \
-           --cover-package tes \
-           --cover-min-percentage 80
+  - python -m nose tests --with-coverage --cover-package tes --cover-min-percentage 80
 
 after_success:
   - coveralls
