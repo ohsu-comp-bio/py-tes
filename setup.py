@@ -2,23 +2,15 @@
 
 from __future__ import print_function
 
-import os
-
 from setuptools import setup
-
-
-SETUP_DIR = os.path.dirname(__file__)
-README = os.path.join(SETUP_DIR, 'README.md')
 
 setup(
     name='tes',
-    version='0.1',
+    version='0.1.0',
     description='Library for communicating with the GA4GH Task Execution API',
-    long_description=open(README).read(),
-    author='Adam Struck',
-    author_email='strucka@ohsu.edu',
+    author='OHSU Computational Biology',
+    maintainer_email='strucka@ohsu.edu',
     url="https://github.com/ohsu-comp-bio/py-tes",
-    download_url="https://github.com/ohsu-comp-bio/py-tes",
     license='MIT',
     install_requires=[
         "attrs>=17.2.0",
@@ -26,5 +18,13 @@ setup(
         "requests>=2.18.1",
         "PyYAML>=3.12"
     ],
-    zip_safe=True
+    zip_safe=True,
+    classifiers=[
+        'Development Status :: 3 - Alpha',
+        'Intended Audience :: Developers',
+        'Natural Language :: English',
+        'License :: OSI Approved :: MIT License',
+        'Topic :: Software Development :: Libraries',
+        'Programming Language :: Python :: 2.7',
+    ],
 )
