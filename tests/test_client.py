@@ -79,6 +79,18 @@ class TestHTTPClient(unittest.TestCase):
             )
             self.assertEqual(m.last_request.timeout, self.cli.timeout)
 
+            # empty response
+            m.get(
+                "%s/v1/tasks" % (self.mock_url),
+                status_code=200,
+                json={}
+            )
+            self.cli.list_tasks()
+            self.assertEqual(
+                m.last_request.url,
+                "%s/v1/tasks?view=MINIMAL" % (self.mock_url)
+            )
+
             m.get(
                 "%s/v1/tasks" % (self.mock_url),
                 status_code=500

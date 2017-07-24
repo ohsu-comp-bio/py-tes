@@ -17,7 +17,7 @@ class HTTPClient(object):
     timeout = attrib(default=10, validator=instance_of(int))
 
     @url.validator
-    def check_url(self, attribute, value):
+    def __check_url(self, attribute, value):
         u = urlparse(value)
         if u.scheme not in ["http", "https"]:
             raise ValueError(
