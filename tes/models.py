@@ -166,13 +166,13 @@ class ExecutorLog(Base):
 @attrs
 class OutputFileLog(Base):
     url = attrib(
-        validator=instance_of((str, unicode))
+        default=None, validator=optional(instance_of((str, unicode)))
     )
     path = attrib(
-        validator=instance_of((str, unicode))
+        default=None, validator=optional(instance_of((str, unicode)))
     )
     size_bytes = attrib(
-        validator=instance_of(int)
+        default=None, validator=optional(instance_of(int))
     )
 
 
@@ -347,7 +347,7 @@ class ListTasksRequest(Base):
 @attrs
 class ListTasksResponse(Base):
     tasks = attrib(
-        validator=list_of(Task)
+        default=None, validator=optional(list_of(Task))
     )
     next_page_token = attrib(
         default=None, validator=optional(instance_of((str, unicode)))
