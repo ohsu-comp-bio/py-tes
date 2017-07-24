@@ -4,7 +4,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='py-tes',
-    version='0.1.2',
+    version='0.1.3',
     description='Library for communicating with the GA4GH Task Execution API',
     author='OHSU Computational Biology',
     author_email='CompBio@ohsu.edu',
@@ -13,7 +13,7 @@ setup(
     url="https://github.com/ohsu-comp-bio/py-tes",
     license='MIT',
     packages=find_packages(),
-    python_requires='>=2.6, <3',
+    python_requires='>=2.6, <4',
     install_requires=[
         "attrs>=17.2.0",
         "polling>=0.3.0",
@@ -28,5 +28,6 @@ setup(
         'License :: OSI Approved :: MIT License',
         'Topic :: Software Development :: Libraries',
         'Programming Language :: Python :: 2.7',
+        'Programming Language :: Python :: 3.5'
     ],
 )

@@ -5,7 +5,7 @@ import requests
 
 from attr import attrs, attrib
 from attr.validators import instance_of
-from urlparse import urlparse
+from requests.utils import urlparse
 
 from tes.models import (Task, ListTasksRequest, ListTasksResponse, ServiceInfo)
 from tes.utils import json2obj, raise_for_status
