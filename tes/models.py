@@ -118,7 +118,7 @@ class Executor(Base):
     cmd = attrib(
         validator=list_of((str, unicode))
     )
-    work_dir = attrib(
+    workdir = attrib(
         default=None, validator=optional(instance_of((str, unicode)))
     )
     stdin = attrib(

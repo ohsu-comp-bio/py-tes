@@ -1,12 +1,10 @@
 #!/usr/bin/env python
 
-from __future__ import print_function
-
 from setuptools import setup, find_packages
 
 setup(
     name='py-tes',
-    version='0.1.0',
+    version='0.1.1',
     description='Library for communicating with the GA4GH Task Execution API',
     author='OHSU Computational Biology',
     author_email='CompBio@ohsu.edu',
