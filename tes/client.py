@@ -8,7 +8,7 @@ from attr.validators import instance_of
 from requests.utils import urlparse
 
 from tes.models import (Task, ListTasksRequest, ListTasksResponse, ServiceInfo)
-from tes.utils import json2obj, raise_for_status
+from tes.utils import unmarshal, raise_for_status
 
 
 @attrs
@@ -31,7 +31,7 @@ class HTTPClient(object):
             timeout=self.timeout
         )
         raise_for_status(response)
-        return json2obj(response.json(), ServiceInfo)
+        return unmarshal(response.json(), ServiceInfo)
 
     def create_task(self, task):
         if isinstance(task, Task):
@@ -54,7 +54,7 @@ class HTTPClient(object):
             timeout=self.timeout
         )
         raise_for_status(response)
-        return json2obj(response.json(), Task)
+        return unmarshal(response.json(), Task)
 
     def cancel_task(self, task_id):
         response = requests.post(
@@ -80,7 +80,7 @@ class HTTPClient(object):
             timeout=self.timeout
         )
         raise_for_status(response)
-        return json2obj(response.json(), ListTasksResponse)
+        return unmarshal(response.json(), ListTasksResponse)
 
     def wait(self, task_id, timeout=None):
         def check_success(data):
