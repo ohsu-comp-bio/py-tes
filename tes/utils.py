@@ -43,13 +43,13 @@ def unmarshal(j, o, convert_camel_case=True):
         "executors": Executor
     }
 
-    def unmarshal_dict(v, obj):
+    def _unmarshal(v, obj):
         if isinstance(v, list):
             field = []
             for item in v:
-                field.append(obj(**item))
+                field.append(unmarshal(item, obj))
         else:
-            field = obj(**v)
+            field = unmarshal(v, obj)
         return field
 
     r = {}
@@ -59,13 +59,13 @@ def unmarshal(j, o, convert_camel_case=True):
             if isinstance(omap[k], tuple):
                 try:
                     obj = omap[k][0]
-                    field = unmarshal_dict(v, obj)
+                    field = _unmarshal(v, obj)
                 except:
                     obj = omap[k][1]
-                    field = unmarshal_dict(v, obj)
+                    field = _unmarshal(v, obj)
             else:
                 obj = omap[k]
-                field = unmarshal_dict(v, obj)
+                field = _unmarshal(v, obj)
         r[k] = field
 
     return o(**r)

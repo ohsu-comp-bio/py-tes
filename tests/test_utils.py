@@ -34,15 +34,46 @@ class TestUtils(unittest.TestCase):
             "name": "test",
             "inputs": [
                 {
-                    "url": "file://test_file",
+                    "url": "file:///storage/inputs/test_file",
                     "path": "/mnt/test_file",
+                    "type": "FILE"
+                }
+            ],
+            "outputs": [
+                {
+                    "url": "file:///storage/outputs/test_outputfile",
+                    "path": "/mnt/test_outputfile",
                     "type": "FILE"
                 }
             ],
             "executors": [
                 {
                     "image_name": "alpine",
-                    "cmd": ["echo", "hello"]
+                    "cmd": ["echo", "hello"],
+                    "ports": [{"host": 0, "container": 8000}]
+                }
+            ],
+            "logs": [
+                {
+                    "start_time": "1",
+                    "end_time": "5",
+                    "metadata": {"testmeta": "testvalue"},
+                    "logs": [
+                        {
+                            "start_time": "1",
+                            "end_time": "5",
+                            "exit_code": 0,
+                            "host_ip": "127.0.0.1",
+                            "ports": [{"host": 8888, "container": 8000}]
+                        }
+                    ],
+                    "outputs": [
+                        {
+                            "url": "file:///storage/outputs/test_outputfile",
+                            "path": "/mnt/test_outputfile",
+                            "size_bytes": 33
+                        }
+                    ]
                 }
             ]
         }
@@ -53,4 +84,3 @@ class TestUtils(unittest.TestCase):
         self.assertTrue(isinstance(o2, Task))
         self.assertEqual(o1, o2)
         self.assertEqual(o1.as_dict(), test_complex_dict)
-        self.assertEqual(o1.as_json(), test_complex_str)
