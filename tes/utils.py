@@ -1,5 +1,6 @@
 from __future__ import absolute_import, print_function
 
+import json
 import re
 import yaml
 
@@ -17,11 +18,11 @@ def camel_to_snake(name):
     return all_cap_re.sub(r'\1_\2', s1).lower()
 
 
-def json2obj(j, o, convert_camel_case=True):
+def unmarshal(j, o, convert_camel_case=True):
     if isinstance(j, str):
         m = yaml.safe_load(j)
     elif isinstance(j, dict):
-        m = j
+        m = yaml.safe_load(json.dumps(j))
     else:
         raise TypeError("j must be a str or dict")
 
@@ -42,13 +43,13 @@ def json2obj(j, o, convert_camel_case=True):
         "executors": Executor
     }
 
-    def dict2obj(v, obj):
+    def _unmarshal(v, obj):
         if isinstance(v, list):
             field = []
             for item in v:
-                field.append(obj(**item))
+                field.append(unmarshal(item, obj))
         else:
-            field = obj(**v)
+            field = unmarshal(v, obj)
         return field
 
     r = {}
@@ -58,13 +59,13 @@ def json2obj(j, o, convert_camel_case=True):
             if isinstance(omap[k], tuple):
                 try:
                     obj = omap[k][0]
-                    field = dict2obj(v, obj)
+                    field = _unmarshal(v, obj)
                 except:
                     obj = omap[k][1]
-                    field = dict2obj(v, obj)
+                    field = _unmarshal(v, obj)
             else:
                 obj = omap[k]
-                field = dict2obj(v, obj)
+                field = _unmarshal(v, obj)
         r[k] = field
 
     return o(**r)
