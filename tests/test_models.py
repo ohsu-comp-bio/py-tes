@@ -1,7 +1,7 @@
 import json
 import unittest
 
-from tes.models import Task, Executor, TaskParameter
+from tes.models import Task, Executor, TaskParameter, strconv
 
 
 class TestModels(unittest.TestCase):
@@ -22,6 +22,28 @@ class TestModels(unittest.TestCase):
             }
         ]
     }
+
+    def test_strconv(self):
+        self.assertTrue(strconv("foo"), u"foo")
+        self.assertTrue(strconv(["foo", "bar"]), [u"foo", u"bar"])
+        self.assertTrue(strconv(("foo", "bar")), (u"foo", u"bar"))
+        self.assertTrue(strconv(1), 1)
+
+        with self.assertRaises(TypeError):
+            TaskParameter(
+                url="s3:/some/path", path="foo", contents=123
+            )
+
+    def test_list_of(self):
+        with self.assertRaises(TypeError):
+            Task(
+                inputs=[
+                    TaskParameter(
+                        url="s3:/some/path", path="foo", contents="content"
+                    ),
+                    "foo"
+                ]
+            )
 
     def test_as_dict(self):
         self.assertEqual(self.task.as_dict(), self.expected)
