@@ -1,4 +1,4 @@
-from __future__ import absolute_import, print_function
+from __future__ import absolute_import, print_function, unicode_literals
 
 import polling
 import requests
@@ -7,7 +7,8 @@ from attr import attrs, attrib
 from attr.validators import instance_of
 from requests.utils import urlparse
 
-from tes.models import (Task, ListTasksRequest, ListTasksResponse, ServiceInfo)
+from tes.models import (Task, ListTasksRequest, ListTasksResponse, ServiceInfo,
+                        GetTaskRequest, CancelTaskRequest, CreateTaskResponse)
 from tes.utils import unmarshal, raise_for_status
 
 
@@ -44,12 +45,13 @@ class HTTPClient(object):
             timeout=self.timeout
         )
         raise_for_status(response)
-        return str(response.json()["id"])
+        return unmarshal(response.json(), CreateTaskResponse).id
 
     def get_task(self, task_id, view="BASIC"):
-        payload = {"view": view}
+        req = GetTaskRequest(task_id, view)
+        payload = {"view": req.view}
         response = requests.get(
-            "%s/v1/tasks/%s" % (self.url, task_id),
+            "%s/v1/tasks/%s" % (self.url, req.id),
             params=payload,
             timeout=self.timeout
         )
@@ -57,8 +59,9 @@ class HTTPClient(object):
         return unmarshal(response.json(), Task)
 
     def cancel_task(self, task_id):
+        req = CancelTaskRequest(task_id)
         response = requests.post(
-            "%s/v1/tasks/%s:cancel" % (self.url, task_id),
+            "%s/v1/tasks/%s:cancel" % (self.url, req.id),
             timeout=self.timeout
         )
         raise_for_status(response)

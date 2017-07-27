@@ -1,8 +1,7 @@
-from __future__ import absolute_import, print_function
+from __future__ import absolute_import, print_function, unicode_literals
 
 import json
 import re
-import yaml
 
 from requests import HTTPError
 from tes.models import (Task, TaskParameter, Resources, Executor, Ports,
@@ -20,9 +19,9 @@ def camel_to_snake(name):
 
 def unmarshal(j, o, convert_camel_case=True):
     if isinstance(j, str):
-        m = yaml.safe_load(j)
+        m = json.loads(j)
     elif isinstance(j, dict):
-        m = yaml.safe_load(json.dumps(j))
+        m = j
     else:
         raise TypeError("j must be a str or dict")
 
