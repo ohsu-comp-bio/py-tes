@@ -1,10 +1,32 @@
 #!/usr/bin/env python
 
+import io
+import os
+import re
+
 from setuptools import setup, find_packages
+
+
+def read(*names, **kwargs):
+    with io.open(
+        os.path.join(os.path.dirname(__file__), *names),
+        encoding=kwargs.get("encoding", "utf8")
+    ) as fp:
+        return fp.read()
+
+
+def find_version(*file_paths):
+    version_file = read(*file_paths)
+    version_match = re.search(r"^__version__ = ['\"]([^'\"]*)['\"]",
+                              version_file, re.M)
+    if version_match:
+        return version_match.group(1)
+    raise RuntimeError("Unable to find version string.")
+
 
 setup(
     name='py-tes',
-    version='0.1.4',
+    version=find_version("tes", "__init__.py"),
     description='Library for communicating with the GA4GH Task Execution API',
     author='OHSU Computational Biology',
     author_email='CompBio@ohsu.edu',
