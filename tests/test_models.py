@@ -1,3 +1,5 @@
+from __future__ import unicode_literals
+
 import json
 import unittest
 
@@ -38,6 +40,8 @@ class TestModels(unittest.TestCase):
 
         task3 = self.task
         task3.outputs = [
-            TaskParameter(url="s3:/some/path", path="foo", contents="content")
+            TaskParameter(
+                url="s3:/some/path", path="foo", contents="content"
+            )
         ]
         self.assertFalse(task3.is_valid()[0])

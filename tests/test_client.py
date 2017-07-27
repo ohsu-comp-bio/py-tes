@@ -1,8 +1,11 @@
+from __future__ import unicode_literals
+
 import requests
 import requests_mock
 import unittest
 import uuid
 
+from builtins import str
 
 from tes.client import HTTPClient
 from tes.models import Task, Executor

@@ -1,9 +1,10 @@
-from __future__ import absolute_import, print_function
+from __future__ import absolute_import, print_function, unicode_literals
 
 import json
 
 from attr import asdict, attrs, attrib
 from attr.validators import instance_of, optional, in_
+from builtins import str
 
 
 @attrs
