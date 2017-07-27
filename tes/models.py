@@ -1,6 +1,7 @@
 from __future__ import absolute_import, print_function, unicode_literals
 
 import json
+import six
 
 from attr import asdict, attrs, attrib
 from attr.validators import instance_of, optional, in_
@@ -49,6 +50,18 @@ def _drop_none(obj):
         return obj
 
 
+def strconv(value):
+    if isinstance(value, (tuple, list)):
+        if all([isinstance(n, six.string_types) for n in value]):
+            return [str(n) for n in value]
+        else:
+            return value
+    elif isinstance(value, six.string_types):
+        return str(value)
+    else:
+        return value
+
+
 @attrs
 class Base(object):
 
@@ -67,22 +80,22 @@ class Base(object):
 @attrs
 class TaskParameter(Base):
     url = attrib(
-        default=None, validator=optional(instance_of(str))
+        default=None, convert=strconv, validator=optional(instance_of(str))
     )
     path = attrib(
-        default=None, validator=optional(instance_of(str))
+        default=None, convert=strconv, validator=optional(instance_of(str))
     )
     type = attrib(
         default="FILE", validator=in_(["FILE", "DIRECTORY"])
     )
     name = attrib(
-        default=None, validator=optional(instance_of(str))
+        default=None, convert=strconv, validator=optional(instance_of(str))
     )
     description = attrib(
-        default=None, validator=optional(instance_of(str))
+        default=None, convert=strconv, validator=optional(instance_of(str))
     )
     contents = attrib(
-        default=None, validator=optional(instance_of(str))
+        default=None, convert=strconv, validator=optional(instance_of(str))
     )
 
 
@@ -101,7 +114,7 @@ class Resources(Base):
         default=None, validator=optional(instance_of(bool))
     )
     zones = attrib(
-        default=None, validator=optional(list_of((str)))
+        default=None, convert=strconv, validator=optional(list_of(str))
     )
 
 
@@ -114,22 +127,22 @@ class Ports(Base):
 @attrs
 class Executor(Base):
     image_name = attrib(
-        validator=instance_of(str)
+        convert=strconv, validator=instance_of(str)
     )
     cmd = attrib(
-        validator=list_of(str)
+        convert=strconv, validator=list_of(str)
     )
     workdir = attrib(
-        default=None, validator=optional(instance_of(str))
+        default=None, convert=strconv, validator=optional(instance_of(str))
     )
     stdin = attrib(
-        default=None, validator=optional(instance_of(str))
+        default=None, convert=strconv, validator=optional(instance_of(str))
     )
     stdout = attrib(
-        default=None, validator=optional(instance_of(str))
+        default=None, convert=strconv, validator=optional(instance_of(str))
     )
     stderr = attrib(
-        default=None, validator=optional(instance_of(str))
+        default=None, convert=strconv, validator=optional(instance_of(str))
     )
     ports = attrib(
         default=None, validator=optional(list_of(Ports))
@@ -142,22 +155,22 @@ class Executor(Base):
 @attrs
 class ExecutorLog(Base):
     start_time = attrib(
-        default=None, validator=optional(instance_of(str))
+        default=None, convert=strconv, validator=optional(instance_of(str))
     )
     end_time = attrib(
-        default=None, validator=optional(instance_of(str))
+        default=None, convert=strconv, validator=optional(instance_of(str))
     )
     stdout = attrib(
-        default=None, validator=optional(instance_of(str))
+        default=None, convert=strconv, validator=optional(instance_of(str))
     )
     stderr = attrib(
-        default=None, validator=optional(instance_of(str))
+        default=None, convert=strconv, validator=optional(instance_of(str))
     )
     exit_code = attrib(
         default=None, validator=optional(instance_of(int))
     )
     host_ip = attrib(
-        default=None, validator=optional(instance_of(str))
+        default=None, convert=strconv, validator=optional(instance_of(str))
     )
     ports = attrib(
         default=None, validator=optional(list_of(Ports))
@@ -167,10 +180,10 @@ class ExecutorLog(Base):
 @attrs
 class OutputFileLog(Base):
     url = attrib(
-        default=None, validator=optional(instance_of(str))
+        default=None, convert=strconv, validator=optional(instance_of(str))
     )
     path = attrib(
-        default=None, validator=optional(instance_of(str))
+        default=None, convert=strconv, validator=optional(instance_of(str))
     )
     size_bytes = attrib(
         default=None, validator=optional(instance_of(int))
@@ -180,10 +193,10 @@ class OutputFileLog(Base):
 @attrs
 class TaskLog(Base):
     start_time = attrib(
-        default=None, validator=optional(instance_of(str))
+        default=None, convert=strconv, validator=optional(instance_of(str))
     )
     end_time = attrib(
-        default=None, validator=optional(instance_of(str))
+        default=None, convert=strconv, validator=optional(instance_of(str))
     )
     metadata = attrib(
         default=None, validator=optional(instance_of(dict))
@@ -199,7 +212,7 @@ class TaskLog(Base):
 @attrs
 class Task(Base):
     id = attrib(
-        default=None, validator=optional(instance_of(str))
+        default=None, convert=strconv, validator=optional(instance_of(str))
     )
     state = attrib(
         default=None,
@@ -209,13 +222,13 @@ class Task(Base):
         ))
     )
     name = attrib(
-        default=None, validator=optional(instance_of(str))
+        default=None, convert=strconv, validator=optional(instance_of(str))
     )
     project = attrib(
-        default=None, validator=optional(instance_of(str))
+        default=None, convert=strconv, validator=optional(instance_of(str))
     )
     description = attrib(
-        default=None, validator=optional(instance_of(str))
+        default=None, convert=strconv, validator=optional(instance_of(str))
     )
     inputs = attrib(
         default=None, validator=optional(list_of(TaskParameter))
@@ -282,7 +295,7 @@ class Task(Base):
 @attrs
 class GetTaskRequest(Base):
     id = attrib(
-        validator=instance_of(str)
+        convert=strconv, validator=instance_of(str)
     )
     view = attrib(
         default=None, validator=optional(in_(["MINIMAL", "BASIC", "FULL"]))
@@ -292,7 +305,7 @@ class GetTaskRequest(Base):
 @attrs
 class CreateTaskResponse(Base):
     id = attrib(
-        validator=instance_of(str)
+        convert=strconv, validator=instance_of(str)
     )
 
 
@@ -304,20 +317,20 @@ class ServiceInfoRequest(Base):
 @attrs
 class ServiceInfo(Base):
     name = attrib(
-        default=None, validator=optional(instance_of(str))
+        default=None, convert=strconv, validator=optional(instance_of(str))
     )
     doc = attrib(
-        default=None, validator=optional(instance_of(str))
+        default=None, convert=strconv, validator=optional(instance_of(str))
     )
     storage = attrib(
-        default=None, validator=optional(list_of(str))
+        default=None, convert=strconv, validator=optional(list_of(str))
     )
 
 
 @attrs
 class CancelTaskRequest(Base):
     id = attrib(
-        validator=instance_of(str)
+        convert=strconv, validator=instance_of(str)
     )
 
 
@@ -329,16 +342,16 @@ class CancelTaskResponse(Base):
 @attrs
 class ListTasksRequest(Base):
     project = attrib(
-        default=None, validator=optional(instance_of(str))
+        default=None, convert=strconv, validator=optional(instance_of(str))
     )
     name_prefix = attrib(
-        default=None, validator=optional(instance_of(str))
+        default=None, convert=strconv, validator=optional(instance_of(str))
     )
     page_size = attrib(
         default=None, validator=optional(instance_of(int))
     )
     page_token = attrib(
-        default=None, validator=optional(instance_of(str))
+        default=None, convert=strconv, validator=optional(instance_of(str))
     )
     view = attrib(
         default=None, validator=optional(in_(["MINIMAL", "BASIC", "FULL"]))
@@ -351,5 +364,5 @@ class ListTasksResponse(Base):
         default=None, validator=optional(list_of(Task))
     )
     next_page_token = attrib(
-        default=None, validator=optional(instance_of(str))
+        default=None, convert=strconv, validator=optional(instance_of(str))
     )
