@@ -17,3 +17,4 @@ eggs/
 .desktop
 
 test_tmp
+*venv*
