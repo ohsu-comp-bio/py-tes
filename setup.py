@@ -40,6 +40,7 @@ setup(
         "attrs>=17.2.0",
         "future>=0.16.0",
         "polling>=0.3.0",
+        "python-dateutil==2.6.1",
         "requests>=2.18.1"
     ],
     zip_safe=True,

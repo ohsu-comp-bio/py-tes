@@ -1,11 +1,13 @@
 from __future__ import absolute_import, print_function, unicode_literals
 
+import dateutil.parser
 import json
 import six
 
 from attr import asdict, attrs, attrib
 from attr.validators import instance_of, optional, in_
 from builtins import str
+from datetime import datetime
 
 
 @attrs
@@ -62,6 +64,26 @@ def strconv(value):
         return value
 
 
+# since an int64 value is encoded as a string in json we need to handle
+# conversion
+def int64conv(value):
+    if value is not None:
+        return int(value)
+    return value
+
+
+def timestampconv(value):
+    if isinstance(value, six.string_types):
+        return dateutil.parser.parse(value)
+    return value
+
+
+def datetime_json_handler(x):
+    if isinstance(x, datetime):
+        return x.isoformat()
+    raise TypeError("Unknown type")
+
+
 @attrs
 class Base(object):
 
@@ -73,7 +95,8 @@ class Base(object):
 
     def as_json(self, drop_empty=True):
         return json.dumps(
-            self.as_dict(drop_empty)
+            self.as_dict(drop_empty),
+            default=datetime_json_handler
         )
 
 
@@ -155,10 +178,14 @@ class Executor(Base):
 @attrs
 class ExecutorLog(Base):
     start_time = attrib(
-        default=None, convert=strconv, validator=optional(instance_of(str))
+        default=None,
+        convert=timestampconv,
+        validator=optional(instance_of(datetime))
     )
     end_time = attrib(
-        default=None, convert=strconv, validator=optional(instance_of(str))
+        default=None,
+        convert=timestampconv,
+        validator=optional(instance_of(datetime))
     )
     stdout = attrib(
         default=None, convert=strconv, validator=optional(instance_of(str))
@@ -186,17 +213,21 @@ class OutputFileLog(Base):
         default=None, convert=strconv, validator=optional(instance_of(str))
     )
     size_bytes = attrib(
-        default=None, validator=optional(instance_of(int))
+        default=None, convert=int64conv, validator=optional(instance_of(int))
     )
 
 
 @attrs
 class TaskLog(Base):
     start_time = attrib(
-        default=None, convert=strconv, validator=optional(instance_of(str))
+        default=None,
+        convert=timestampconv,
+        validator=optional(instance_of(datetime))
     )
     end_time = attrib(
-        default=None, convert=strconv, validator=optional(instance_of(str))
+        default=None,
+        convert=timestampconv,
+        validator=optional(instance_of(datetime))
     )
     metadata = attrib(
         default=None, validator=optional(instance_of(dict))
