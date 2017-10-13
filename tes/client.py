@@ -1,7 +1,7 @@
 from __future__ import absolute_import, print_function, unicode_literals
 
-import polling
 import requests
+import time
 
 from attr import attrs, attrib
 from attr.validators import instance_of
@@ -88,16 +88,22 @@ class HTTPClient(object):
     def wait(self, task_id, timeout=None):
         def check_success(data):
             return data.state not in ["QUEUED", "RUNNING", "INITIALIZING"]
-        if timeout is not None:
-            return polling.poll(
-                lambda: self.get_task(task_id, "MINIMAL"),
-                check_success=check_success,
-                timeout=timeout,
-                step=0.1
-            )
-        return polling.poll(
-            lambda: self.get_task(task_id, "MINIMAL"),
-            check_success=check_success,
-            step=0.1,
-            poll_forever=True
-        )
+
+        class TimeoutException(Exception):
+            """Exception raised if polling function times out"""
+
+        max_time = time.time() + timeout if timeout else None
+
+        while True:
+            try:
+                response = self.get_task(task_id, "MINIMAL")
+            except:
+                response = "UNKNOWN"
+
+            if check_success(response):
+                return response
+
+            if max_time is not None and time.time() >= max_time:
+                raise TimeoutException
+
+            time.sleep(0.5)
