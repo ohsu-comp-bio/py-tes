@@ -22,6 +22,11 @@ class UnmarshalError(Exception):
         Exception.__init__(self, *args, **kwargs)
 
 
+class TimeoutError(Exception):
+    def __init__(self, *args, **kwargs):
+        Exception.__init__(self, *args, **kwargs)
+
+
 def unmarshal(j, o, convert_camel_case=True):
     if isinstance(j, str):
         m = json.loads(j)

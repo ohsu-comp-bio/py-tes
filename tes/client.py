@@ -9,7 +9,7 @@ from requests.utils import urlparse
 
 from tes.models import (Task, ListTasksRequest, ListTasksResponse, ServiceInfo,
                         GetTaskRequest, CancelTaskRequest, CreateTaskResponse)
-from tes.utils import unmarshal, raise_for_status
+from tes.utils import unmarshal, raise_for_status, TimeoutError
 
 
 @attrs
@@ -89,21 +89,19 @@ class HTTPClient(object):
         def check_success(data):
             return data.state not in ["QUEUED", "RUNNING", "INITIALIZING"]
 
-        class TimeoutException(Exception):
-            """Exception raised if polling function times out"""
-
         max_time = time.time() + timeout if timeout else None
 
         while True:
             try:
                 response = self.get_task(task_id, "MINIMAL")
             except Exception:
-                response = "UNKNOWN"
+                response = None
 
-            if check_success(response):
-                return response
+            if response is not None:
+                if check_success(response):
+                    return response
 
             if max_time is not None and time.time() >= max_time:
-                raise TimeoutException
+                raise TimeoutError("last_response: %s" % (response.as_dict()))
 
             time.sleep(0.5)
