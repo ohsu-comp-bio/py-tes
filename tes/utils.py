@@ -17,6 +17,16 @@ def camel_to_snake(name):
     return all_cap_re.sub(r'\1_\2', s1).lower()
 
 
+class UnmarshalError(Exception):
+    def __init__(self, *args, **kwargs):
+        Exception.__init__(self, *args, **kwargs)
+
+
+class TimeoutError(Exception):
+    def __init__(self, *args, **kwargs):
+        Exception.__init__(self, *args, **kwargs)
+
+
 def unmarshal(j, o, convert_camel_case=True):
     if isinstance(j, str):
         m = json.loads(j)
@@ -59,7 +69,7 @@ def unmarshal(j, o, convert_camel_case=True):
                 try:
                     obj = omap[k][0]
                     field = _unmarshal(v, obj)
-                except:
+                except Exception:
                     obj = omap[k][1]
                     field = _unmarshal(v, obj)
             else:
@@ -67,13 +77,21 @@ def unmarshal(j, o, convert_camel_case=True):
                 field = _unmarshal(v, obj)
         r[k] = field
 
-    return o(**r)
+    try:
+        output = o(**r)
+    except Exception as e:
+        msg = "%s could not be unmarshalled to type: %s" % (j, o.__name__) + \
+              "\n" + \
+              "%s: %s" % (type(e).__name__, e)
+        raise UnmarshalError(msg)
+
+    return output
 
 
 def raise_for_status(response):
     try:
         response.raise_for_status()
-    except:
+    except Exception:
         raise HTTPError(
             "\n<status code> %d\n<response> %s\n" %
             (response.status_code, response.text)
