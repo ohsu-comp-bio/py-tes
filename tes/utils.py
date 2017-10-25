@@ -64,7 +64,7 @@ def unmarshal(j, o, convert_camel_case=True):
                 try:
                     obj = omap[k][0]
                     field = _unmarshal(v, obj)
-                except:
+                except Exception:
                     obj = omap[k][1]
                     field = _unmarshal(v, obj)
             else:
@@ -86,7 +86,7 @@ def unmarshal(j, o, convert_camel_case=True):
 def raise_for_status(response):
     try:
         response.raise_for_status()
-    except:
+    except Exception:
         raise HTTPError(
             "\n<status code> %d\n<response> %s\n" %
             (response.status_code, response.text)

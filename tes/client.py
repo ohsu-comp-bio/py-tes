@@ -97,7 +97,7 @@ class HTTPClient(object):
         while True:
             try:
                 response = self.get_task(task_id, "MINIMAL")
-            except:
+            except Exception:
                 response = "UNKNOWN"
 
             if check_success(response):
