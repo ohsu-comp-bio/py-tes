@@ -2,8 +2,8 @@ import dateutil.parser
 import json
 import unittest
 
-from tes.utils import camel_to_snake, unmarshal
-from tes.models import TaskParameter, Task
+from tes.utils import camel_to_snake, unmarshal, UnmarshalError
+from tes.models import TaskParameter, Task, CreateTaskResponse
 
 
 class TestUtils(unittest.TestCase):
@@ -17,6 +17,13 @@ class TestUtils(unittest.TestCase):
         self.assertEqual(camel_to_snake(case3), "foo_bar")
 
     def test_unmarshal(self):
+        test_invalid_dict = {"adfasd": "bar"}
+        test_invalid_str = json.dumps(test_invalid_dict)
+        with self.assertRaises(UnmarshalError):
+            unmarshal(test_invalid_dict, CreateTaskResponse)
+        with self.assertRaises(UnmarshalError):
+            unmarshal(test_invalid_str, CreateTaskResponse)
+
         test_simple_dict = {
             "url": "file://test_file",
             "path": "/mnt/test_file",
