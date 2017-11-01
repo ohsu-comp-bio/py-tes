@@ -1,5 +1,6 @@
 from __future__ import absolute_import, print_function, unicode_literals
 
+import re
 import requests
 import time
 
@@ -12,9 +13,13 @@ from tes.models import (Task, ListTasksRequest, ListTasksResponse, ServiceInfo,
 from tes.utils import unmarshal, raise_for_status, TimeoutError
 
 
+def process_url(value):
+    return re.sub("[/]+$", "", value)
+
+
 @attrs
 class HTTPClient(object):
-    url = attrib()
+    url = attrib(convert=process_url)
     timeout = attrib(default=10, validator=instance_of(int))
 
     @url.validator

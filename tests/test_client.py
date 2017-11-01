@@ -21,6 +21,17 @@ class TestHTTPClient(unittest.TestCase):
     mock_url = "http://fakehost:8000"
     cli = HTTPClient(mock_url, timeout=5)
 
+    def test_cli(self):
+        cli = HTTPClient(url="http://fakehost:8000//", timeout=5)
+        self.assertEqual(cli.url, "http://fakehost:8000")
+        self.assertEqual(cli.timeout, 5)
+
+        with self.assertRaises(ValueError):
+            HTTPClient(url="fakehost:8000", timeout=5)
+
+        with self.assertRaises(ValueError):
+            HTTPClient(url="htpp://fakehost:8000", timeout="5")
+
     def test_create_task(self):
         with requests_mock.Mocker() as m:
             m.post(
