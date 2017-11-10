@@ -2,6 +2,7 @@ from __future__ import absolute_import, print_function, unicode_literals
 
 import dateutil.parser
 import json
+import os
 import six
 
 from attr import asdict, attrs, attrib
@@ -101,7 +102,7 @@ class Base(object):
 
 
 @attrs
-class TaskParameter(Base):
+class Input(Base):
     url = attrib(
         default=None, convert=strconv, validator=optional(instance_of(str))
     )
@@ -117,7 +118,26 @@ class TaskParameter(Base):
     description = attrib(
         default=None, convert=strconv, validator=optional(instance_of(str))
     )
-    contents = attrib(
+    content = attrib(
+        default=None, convert=strconv, validator=optional(instance_of(str))
+    )
+
+
+@attrs
+class Output(Base):
+    url = attrib(
+        default=None, convert=strconv, validator=optional(instance_of(str))
+    )
+    path = attrib(
+        default=None, convert=strconv, validator=optional(instance_of(str))
+    )
+    type = attrib(
+        default="FILE", validator=in_(["FILE", "DIRECTORY"])
+    )
+    name = attrib(
+        default=None, convert=strconv, validator=optional(instance_of(str))
+    )
+    description = attrib(
         default=None, convert=strconv, validator=optional(instance_of(str))
     )
 
@@ -130,7 +150,7 @@ class Resources(Base):
     ram_gb = attrib(
         default=None, validator=optional(instance_of((float, int)))
     )
-    size_gb = attrib(
+    disk_gb = attrib(
         default=None, validator=optional(instance_of((float, int)))
     )
     preemptible = attrib(
@@ -142,17 +162,11 @@ class Resources(Base):
 
 
 @attrs
-class Ports(Base):
-    container = attrib(validator=instance_of(int))
-    host = attrib(default=0, validator=instance_of(int))
-
-
-@attrs
 class Executor(Base):
-    image_name = attrib(
+    image = attrib(
         convert=strconv, validator=instance_of(str)
     )
-    cmd = attrib(
+    command = attrib(
         convert=strconv, validator=list_of(str)
     )
     workdir = attrib(
@@ -167,10 +181,7 @@ class Executor(Base):
     stderr = attrib(
         default=None, convert=strconv, validator=optional(instance_of(str))
     )
-    ports = attrib(
-        default=None, validator=optional(list_of(Ports))
-    )
-    environ = attrib(
+    env = attrib(
         default=None, validator=optional(instance_of(dict))
     )
 
@@ -195,12 +206,6 @@ class ExecutorLog(Base):
     )
     exit_code = attrib(
         default=None, validator=optional(instance_of(int))
-    )
-    host_ip = attrib(
-        default=None, convert=strconv, validator=optional(instance_of(str))
-    )
-    ports = attrib(
-        default=None, validator=optional(list_of(Ports))
     )
 
 
@@ -238,6 +243,9 @@ class TaskLog(Base):
     outputs = attrib(
         default=None, validator=optional(list_of(OutputFileLog))
     )
+    system_logs = attrib(
+        default=None, validator=optional(list_of(str))
+    )
 
 
 @attrs
@@ -249,23 +257,20 @@ class Task(Base):
         default=None,
         validator=optional(in_(
             ["UKNOWN", "QUEUED", "INITIALIZING", "RUNNING", "COMPLETE",
-             "PAUSED", "CANCELED", "ERROR", "SYSTEM_ERROR"]
+             "CANCELED", "EXECUTOR_ERROR", "SYSTEM_ERROR"]
         ))
     )
     name = attrib(
-        default=None, convert=strconv, validator=optional(instance_of(str))
-    )
-    project = attrib(
         default=None, convert=strconv, validator=optional(instance_of(str))
     )
     description = attrib(
         default=None, convert=strconv, validator=optional(instance_of(str))
     )
     inputs = attrib(
-        default=None, validator=optional(list_of(TaskParameter))
+        default=None, validator=optional(list_of(Input))
     )
     outputs = attrib(
-        default=None, validator=optional(list_of(TaskParameter))
+        default=None, validator=optional(list_of(Output))
     )
     resources = attrib(
         default=None, validator=optional(instance_of(Resources))
@@ -282,44 +287,74 @@ class Task(Base):
     logs = attrib(
         default=None, validator=optional(list_of(TaskLog))
     )
+    creation_time = attrib(
+        default=None,
+        convert=timestampconv,
+        validator=optional(instance_of(datetime))
+    )
 
     def is_valid(self):
-        if self.executors is None:
-            return False, TypeError("executors NoneType")
+        errs = []
+        if self.executors is None or len(self.executors) == 0:
+            errs.append("Must provide one or more Executors")
         else:
             for e in self.executors:
-                if e.environ is not None:
-                    for k, v in self.executors.environ:
+                if e.image is None:
+                    errs.append("Executor image must be provided")
+                if len(e.command) == 0:
+                    errs.append("Executor command must be provided")
+                if e.stdin is not None:
+                    if not os.path.isabs(e.stdin):
+                        errs.append("Executor stdin must be an absolute path")
+                if e.stdout is not None:
+                    if not os.path.isabs(e.stdout):
+                        errs.append("Executor stdout must be an absolute path")
+                if e.stderr is not None:
+                    if not os.path.isabs(e.stderr):
+                        errs.append("Executor stderr must be an absolute path")
+                if e.env is not None:
+                    for k, v in self.executors.env:
                         if not isinstance(k, str) and not isinstance(k, str):
-                            return False, TypeError(
-                                "keys and values of environ must be StrType"
+                            errs.append(
+                                "Executor env keys and values must be StrType"
                             )
 
         if self.inputs is not None:
             for i in self.inputs:
-                if i.url is None and i.contents is None:
-                    return False, TypeError(
-                        "TaskParameter url must be provided"
-                    )
-                if i.url is not None and i.contents is not None:
-                    return False, TypeError(
-                        "TaskParameter url and contents are mutually exclusive"
-                    )
-                if i.url is None and i.path is None:
-                    return False, TypeError(
-                        "TaskParameter url and path must be provided"
-                    )
+                if i.url is None and i.content is None:
+                    errs.append("Input url must be provided")
+                if i.url is not None and i.content is not None:
+                    errs.append("Input url and content are mutually exclusive")
+                if i.path is None:
+                    errs.append("Input path must be provided")
+                elif not os.path.isabs(i.path):
+                    errs.append("Input path must be absolute")
 
         if self.outputs is not None:
             for o in self.outputs:
-                if o.url is None or o.path is None:
-                    return False, TypeError(
-                        "TaskParameter url and path must be provided"
+                if o.url is None:
+                    errs.append("Output url must be provided")
+                if o.path is None:
+                    errs.append("Output path must be provided")
+                elif not os.path.isabs(i.path):
+                    errs.append("Output path must be absolute")
+
+        if self.volumes is not None:
+            if len(self.volumes) > 0:
+                for v in self.volumes:
+                    if not os.path.isabs(v):
+                        errs.append("Volume paths must be absolute")
+
+        if self.tags is not None:
+            for k, v in self.tags:
+                if not isinstance(k, str) and not isinstance(k, str):
+                    errs.append(
+                        "Tag keys and values must be StrType"
                     )
-                if o.contents is not None:
-                    return False, TypeError(
-                        "Output TaskParameter instances do not have contents"
-                    )
+
+        if len(errs) > 0:
+            return False, TypeError("\n".join(errs))
+
         return True, None
 
 

@@ -3,7 +3,7 @@ import json
 import unittest
 
 from tes.utils import camel_to_snake, unmarshal, UnmarshalError
-from tes.models import TaskParameter, Task, CreateTaskResponse
+from tes.models import Input, Task, CreateTaskResponse
 
 
 class TestUtils(unittest.TestCase):
@@ -30,10 +30,10 @@ class TestUtils(unittest.TestCase):
             "type": "FILE"
         }
         test_simple_str = json.dumps(test_simple_dict)
-        o1 = unmarshal(test_simple_dict, TaskParameter)
-        o2 = unmarshal(test_simple_str, TaskParameter)
-        self.assertTrue(isinstance(o1, TaskParameter))
-        self.assertTrue(isinstance(o2, TaskParameter))
+        o1 = unmarshal(test_simple_dict, Input)
+        o2 = unmarshal(test_simple_str, Input)
+        self.assertTrue(isinstance(o1, Input))
+        self.assertTrue(isinstance(o2, Input))
         self.assertEqual(o1, o2)
         self.assertEqual(o1.as_dict(), test_simple_dict)
         self.assertEqual(o1.as_json(), test_simple_str)
@@ -56,9 +56,9 @@ class TestUtils(unittest.TestCase):
             ],
             "executors": [
                 {
-                    "image_name": "alpine",
-                    "cmd": ["echo", "hello"],
-                    "ports": [{"host": 0, "container": 8000}]
+                    "image": "alpine",
+                    "command": ["echo", "hello"],
+                    "env": {"HOME": "/home/"}
                 }
             ],
             "logs": [
@@ -71,8 +71,6 @@ class TestUtils(unittest.TestCase):
                             "start_time": "2017-10-09T17:06:30.0Z",
                             "end_time": "2017-10-09T17:39:50.0Z",
                             "exit_code": 0,
-                            "host_ip": "127.0.0.1",
-                            "ports": [{"host": 8888, "container": 8000}]
                         }
                     ],
                     "outputs": [
@@ -83,7 +81,8 @@ class TestUtils(unittest.TestCase):
                         }
                     ]
                 }
-            ]
+            ],
+            "creation_time": "2017-10-09T17:00:00.0Z"
         }
 
         test_complex_str = json.dumps(test_complex_dict)
@@ -109,6 +108,9 @@ class TestUtils(unittest.TestCase):
         )
         expected["logs"][0]["logs"][0]["end_time"] = dateutil.parser.parse(
             expected["logs"][0]["logs"][0]["end_time"]
+        )
+        expected["creation_time"] = dateutil.parser.parse(
+            expected["creation_time"]
         )
 
         self.assertEqual(o1.as_dict(), expected)
