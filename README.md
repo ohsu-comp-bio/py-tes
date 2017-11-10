@@ -24,8 +24,8 @@ import tes
 task = tes.Task(
     executors=[
         Executor(
-            image_name="alpine",
-            cmd=["echo", "hello"]
+            image="alpine",
+            command=["echo", "hello"]
         )
     ]
 )
