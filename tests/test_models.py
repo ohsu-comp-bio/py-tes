@@ -1,15 +1,15 @@
 import json
 import unittest
 
-from tes.models import Task, Executor, TaskParameter, strconv
+from tes.models import Task, Executor, Input, Output, strconv
 
 
 class TestModels(unittest.TestCase):
     task = Task(
         executors=[
             Executor(
-                image_name="alpine",
-                cmd=["echo", "hello"]
+                image="alpine",
+                command=["echo", "hello"]
             )
         ]
     )
@@ -17,8 +17,8 @@ class TestModels(unittest.TestCase):
     expected = {
         "executors": [
             {
-                "image_name": "alpine",
-                "cmd": ["echo", "hello"]
+                "image": "alpine",
+                "command": ["echo", "hello"]
             }
         ]
     }
@@ -30,16 +30,16 @@ class TestModels(unittest.TestCase):
         self.assertTrue(strconv(1), 1)
 
         with self.assertRaises(TypeError):
-            TaskParameter(
-                url="s3:/some/path", path="foo", contents=123
+            Input(
+                url="s3:/some/path", path="/opt/foo", content=123
             )
 
     def test_list_of(self):
         with self.assertRaises(TypeError):
             Task(
                 inputs=[
-                    TaskParameter(
-                        url="s3:/some/path", path="foo", contents="content"
+                    Input(
+                        url="s3:/some/path", path="/opt/foo"
                     ),
                     "foo"
                 ]
@@ -55,13 +55,13 @@ class TestModels(unittest.TestCase):
         self.assertTrue(self.task.is_valid()[0])
 
         task2 = self.task
-        task2.inputs = [TaskParameter(path="foo")]
+        task2.inputs = [Input(path="/opt/foo")]
         self.assertFalse(task2.is_valid()[0])
 
         task3 = self.task
         task3.outputs = [
-            TaskParameter(
-                url="s3:/some/path", path="foo", contents="content"
+            Output(
+                url="s3:/some/path", path="foo"
             )
         ]
         self.assertFalse(task3.is_valid()[0])

@@ -3,9 +3,9 @@ from __future__ import absolute_import
 from tes.client import HTTPClient
 from tes.utils import unmarshal
 from tes.models import (
-    TaskParameter,
+    Input,
+    Output,
     Resources,
-    Ports,
     Executor,
     Task,
     ExecutorLog,
@@ -22,9 +22,9 @@ from tes.models import (
 __all__ = [
     HTTPClient,
     unmarshal,
-    TaskParameter,
+    Input,
+    Output,
     Resources,
-    Ports,
     Executor,
     Task,
     ExecutorLog,
@@ -38,4 +38,4 @@ __all__ = [
     ServiceInfo
 ]
 
-__version__ = "0.1.6"
+__version__ = "0.2.0"

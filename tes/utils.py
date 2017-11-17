@@ -4,7 +4,7 @@ import json
 import re
 
 from requests import HTTPError
-from tes.models import (Task, TaskParameter, Resources, Executor, Ports,
+from tes.models import (Task, Input, Output, Resources, Executor,
                         TaskLog, ExecutorLog, OutputFileLog)
 
 
@@ -44,10 +44,9 @@ def unmarshal(j, o, convert_camel_case=True):
 
     omap = {
         "tasks": Task,
-        "inputs": TaskParameter,
-        "outputs": (TaskParameter, OutputFileLog),
+        "inputs": Input,
+        "outputs": (Output, OutputFileLog),
         "logs": (TaskLog, ExecutorLog),
-        "ports": Ports,
         "resources": Resources,
         "executors": Executor
     }
