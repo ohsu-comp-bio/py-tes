@@ -47,6 +47,7 @@ class HTTPClient(object):
         response = requests.post(
             "%s/v1/tasks" % (self.url),
             data=msg,
+            headers={'Content-Type': 'application/json'},
             timeout=self.timeout
         )
         raise_for_status(response)
