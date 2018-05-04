@@ -1,3 +1,5 @@
+from __future__ import absolute_import, print_function, unicode_literals
+
 import dateutil.parser
 import json
 import unittest
@@ -71,6 +73,8 @@ class TestUtils(unittest.TestCase):
                             "start_time": "2017-10-09T17:06:30.0Z",
                             "end_time": "2017-10-09T17:39:50.0Z",
                             "exit_code": 0,
+                            "stdout": "hello",
+                            "stderr": "",
                         }
                     ],
                     "outputs": [
@@ -79,6 +83,12 @@ class TestUtils(unittest.TestCase):
                             "path": "/mnt/test_outputfile",
                             "size_bytes": "3333"
                         }
+                    ],
+                    "system_logs": [
+                        "level='info' msg='Download started' \
+                        timestamp='2018-05-04T09:12:42.391262682-07:00' \
+                        task_attempt='0' executor_index='0' \
+                        url='swift://biostream/protograph'"
                     ]
                 }
             ],
