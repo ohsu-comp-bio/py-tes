@@ -25,19 +25,19 @@ def find_version(*file_paths):
 
 
 setup(
-    name='py-tes',
+    name="py-tes",
     version=find_version("tes", "__init__.py"),
-    description='Library for communicating with the GA4GH Task Execution API',
-    long_description=read('README.md'),
-    long_description_content_type='text/markdown',
-    author='OHSU Computational Biology',
-    author_email='CompBio@ohsu.edu',
-    maintainer='Adam Struck',
-    maintainer_email='strucka@ohsu.edu',
+    description="Library for communicating with the GA4GH Task Execution API",
+    long_description=read("README.md"),
+    long_description_content_type="text/markdown",
+    author="OHSU Computational Biology",
+    author_email="CompBio@ohsu.edu",
+    maintainer="Adam Struck",
+    maintainer_email="strucka@ohsu.edu",
     url="https://github.com/ohsu-comp-bio/py-tes",
-    license='MIT',
+    license="MIT",
     packages=find_packages(),
-    python_requires='>=2.7, <4',
+    python_requires=">=2.7, <4",
     install_requires=[
         "attrs>=17.2.0",
         "future>=0.16.0",
@@ -46,12 +46,16 @@ setup(
     ],
     zip_safe=True,
     classifiers=[
-        'Development Status :: 3 - Alpha',
-        'Intended Audience :: Developers',
-        'Natural Language :: English',
-        'License :: OSI Approved :: MIT License',
-        'Topic :: Software Development :: Libraries',
-        'Programming Language :: Python :: 2.7',
-        'Programming Language :: Python :: 3.6'
+        "Development Status :: 3 - Alpha",
+        "Intended Audience :: Developers",
+        "Natural Language :: English",
+        "License :: OSI Approved :: MIT License",
+        "Topic :: Software Development :: Libraries",
+        "Programming Language :: Python :: 2",
+        "Programming Language :: Python :: 2.7",
+        "Programming Language :: Python :: 3",
+        "Programming Language :: Python :: 3.4"
+        "Programming Language :: Python :: 3.5"
+        "Programming Language :: Python :: 3.6"
     ],
 )
