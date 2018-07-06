@@ -10,7 +10,7 @@ _py-tes_ is a library for interacting with servers implementing the [GA4GH Task 
 
 ### Install
 
-_py-tes_ is available on PyPI for installation via `pip`. 
+Available on [PyPI](https://pypi.org/project/py-tes/).
 
 ```
 pip install py-tes

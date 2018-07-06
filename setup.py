@@ -28,6 +28,8 @@ setup(
     name='py-tes',
     version=find_version("tes", "__init__.py"),
     description='Library for communicating with the GA4GH Task Execution API',
+    long_description=read('README.md'),
+    long_description_content_type='text/markdown',
     author='OHSU Computational Biology',
     author_email='CompBio@ohsu.edu',
     maintainer='Adam Struck',
