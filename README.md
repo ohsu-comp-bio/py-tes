@@ -23,7 +23,7 @@ import tes
 
 task = tes.Task(
     executors=[
-        Executor(
+        tes.Executor(
             image="alpine",
             command=["echo", "hello"]
         )

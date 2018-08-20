@@ -5,11 +5,13 @@ import requests
 import time
 
 from attr import attrs, attrib
-from attr.validators import instance_of
+from attr.validators import instance_of, optional
+from builtins import str
 from requests.utils import urlparse
 
 from tes.models import (Task, ListTasksRequest, ListTasksResponse, ServiceInfo,
-                        GetTaskRequest, CancelTaskRequest, CreateTaskResponse)
+                        GetTaskRequest, CancelTaskRequest, CreateTaskResponse,
+                        strconv)
 from tes.utils import unmarshal, raise_for_status, TimeoutError
 
 
@@ -21,6 +23,12 @@ def process_url(value):
 class HTTPClient(object):
     url = attrib(convert=process_url)
     timeout = attrib(default=10, validator=instance_of(int))
+    user = attrib(default=None,
+                  convert=strconv,
+                  validator=optional(instance_of(str)))
+    password = attrib(default=None,
+                      convert=strconv,
+                      validator=optional(instance_of(str)))
 
     @url.validator
     def __check_url(self, attribute, value):
@@ -34,7 +42,8 @@ class HTTPClient(object):
     def get_service_info(self):
         response = requests.get(
             "%s/v1/tasks/service-info" % (self.url),
-            timeout=self.timeout
+            timeout=self.timeout,
+            auth=(self.user, self.password)
         )
         raise_for_status(response)
         return unmarshal(response.json(), ServiceInfo)
@@ -48,7 +57,8 @@ class HTTPClient(object):
             "%s/v1/tasks" % (self.url),
             data=msg,
             headers={'Content-Type': 'application/json'},
-            timeout=self.timeout
+            timeout=self.timeout,
+            auth=(self.user, self.password)
         )
         raise_for_status(response)
         return unmarshal(response.json(), CreateTaskResponse).id
@@ -59,7 +69,8 @@ class HTTPClient(object):
         response = requests.get(
             "%s/v1/tasks/%s" % (self.url, req.id),
             params=payload,
-            timeout=self.timeout
+            timeout=self.timeout,
+            auth=(self.user, self.password)
         )
         raise_for_status(response)
         return unmarshal(response.json(), Task)
@@ -68,7 +79,8 @@ class HTTPClient(object):
         req = CancelTaskRequest(task_id)
         response = requests.post(
             "%s/v1/tasks/%s:cancel" % (self.url, req.id),
-            timeout=self.timeout
+            timeout=self.timeout,
+            auth=(self.user, self.password)
         )
         raise_for_status(response)
         return
@@ -86,7 +98,8 @@ class HTTPClient(object):
         response = requests.get(
             "%s/v1/tasks" % (self.url),
             params=msg,
-            timeout=self.timeout
+            timeout=self.timeout,
+            auth=(self.user, self.password)
         )
         raise_for_status(response)
         return unmarshal(response.json(), ListTasksResponse)
