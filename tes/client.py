@@ -29,6 +29,9 @@ class HTTPClient(object):
     password = attrib(default=None,
                       convert=strconv,
                       validator=optional(instance_of(str)))
+    token = attrib(default=None,
+                   convert=strconv,
+                   validator=optional(instance_of(str)))
 
     @url.validator
     def __check_url(self, attribute, value):
@@ -40,11 +43,10 @@ class HTTPClient(object):
             )
 
     def get_service_info(self):
+        kwargs = self._request_params()
         response = requests.get(
             "%s/v1/tasks/service-info" % (self.url),
-            timeout=self.timeout,
-            auth=(self.user, self.password)
-        )
+            **kwargs)
         raise_for_status(response)
         return unmarshal(response.json(), ServiceInfo)
 
@@ -53,12 +55,11 @@ class HTTPClient(object):
             msg = task.as_json()
         else:
             raise TypeError("Expected Task instance")
+
+        kwargs = self._request_params(data=msg)
         response = requests.post(
             "%s/v1/tasks" % (self.url),
-            data=msg,
-            headers={'Content-Type': 'application/json'},
-            timeout=self.timeout,
-            auth=(self.user, self.password)
+            **kwargs
         )
         raise_for_status(response)
         return unmarshal(response.json(), CreateTaskResponse).id
@@ -66,22 +67,19 @@ class HTTPClient(object):
     def get_task(self, task_id, view="BASIC"):
         req = GetTaskRequest(task_id, view)
         payload = {"view": req.view}
+        kwargs = self._request_params(params=payload)
         response = requests.get(
             "%s/v1/tasks/%s" % (self.url, req.id),
-            params=payload,
-            timeout=self.timeout,
-            auth=(self.user, self.password)
-        )
+            **kwargs)
         raise_for_status(response)
         return unmarshal(response.json(), Task)
 
     def cancel_task(self, task_id):
         req = CancelTaskRequest(task_id)
+        kwargs = self._request_params()
         response = requests.post(
             "%s/v1/tasks/%s:cancel" % (self.url, req.id),
-            timeout=self.timeout,
-            auth=(self.user, self.password)
-        )
+            **kwargs)
         raise_for_status(response)
         return
 
@@ -95,12 +93,10 @@ class HTTPClient(object):
         )
         msg = req.as_dict()
 
+        kwargs = self._request_params(params=msg)
         response = requests.get(
             "%s/v1/tasks" % (self.url),
-            params=msg,
-            timeout=self.timeout,
-            auth=(self.user, self.password)
-        )
+            **kwargs)
         raise_for_status(response)
         return unmarshal(response.json(), ListTasksResponse)
 
@@ -122,5 +118,20 @@ class HTTPClient(object):
 
             if max_time is not None and time.time() >= max_time:
                 raise TimeoutError("last_response: %s" % (response.as_dict()))
-
             time.sleep(0.5)
+
+    def _request_params(self, data=None, params=None):
+        kwargs = {'timeout': self.timeout}
+
+        if data:
+            kwargs['data'] = data
+        if params:
+            kwargs['params'] = params
+        if self.token:
+            kwargs['headers'] = {'Content-type': 'application/json',
+                                 'Authorization': 'Bearer ' + self.token}
+        else:
+            kwargs['headers'] = {'Content-type': 'application/json'}
+            kwargs['auth'] = (self.user, self.password)
+
+        return kwargs
