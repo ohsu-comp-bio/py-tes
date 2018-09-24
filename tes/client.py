@@ -64,22 +64,6 @@ class HTTPClient(object):
         raise_for_status(response)
         return unmarshal(response.json(), CreateTaskResponse).id
 
-    def request_params(self, data=None, params=None):
-        kwargs = {'timeout': self.timeout}
-
-        if data:
-            kwargs['data'] = data
-        if params:
-            kwargs['params'] = params
-        if self.token:
-            kwargs['headers'] = {'Content-type': 'application/json',
-                                 'Authorization': 'Bearer ' + self.token}
-        else:
-            kwargs['headers'] = {'Content-type': 'application/json'}
-            kwargs['auth'] = (self.user, self.password)
-
-        return kwargs
-
     def get_task(self, task_id, view="BASIC"):
         req = GetTaskRequest(task_id, view)
         payload = {"view": req.view}
