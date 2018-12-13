@@ -256,7 +256,7 @@ class Task(Base):
     state = attrib(
         default=None,
         validator=optional(in_(
-            ["UKNOWN", "QUEUED", "INITIALIZING", "RUNNING", "COMPLETE",
+            ["UNKNOWN", "QUEUED", "INITIALIZING", "RUNNING", "COMPLETE",
              "CANCELED", "EXECUTOR_ERROR", "SYSTEM_ERROR"]
         ))
     )
