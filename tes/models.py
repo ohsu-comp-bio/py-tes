@@ -91,7 +91,7 @@ class Base(object):
     def as_dict(self, drop_empty=True):
         obj = asdict(self)
         if drop_empty:
-                return _drop_none(obj)
+            return _drop_none(obj)
         return obj
 
     def as_json(self, drop_empty=True):
