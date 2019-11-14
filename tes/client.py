@@ -21,16 +21,16 @@ def process_url(value):
 
 @attrs
 class HTTPClient(object):
-    url = attrib(convert=process_url)
+    url = attrib(converter=process_url)
     timeout = attrib(default=10, validator=instance_of(int))
     user = attrib(default=None,
-                  convert=strconv,
+                  converter=strconv,
                   validator=optional(instance_of(str)))
     password = attrib(default=None,
-                      convert=strconv,
+                      converter=strconv,
                       validator=optional(instance_of(str)))
     token = attrib(default=None,
-                   convert=strconv,
+                   converter=strconv,
                    validator=optional(instance_of(str)))
 
     @url.validator
