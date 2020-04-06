@@ -46,7 +46,7 @@ def unmarshal(j, o, convert_camel_case=True):
         "tasks": Task,
         "inputs": Input,
         "outputs": (Output, OutputFileLog),
-        "logs": (TaskLog, ExecutorLog),
+        "logs": (ExecutorLog, TaskLog),
         "resources": Resources,
         "executors": Executor
     }
