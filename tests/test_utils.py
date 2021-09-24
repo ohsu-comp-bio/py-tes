@@ -140,9 +140,16 @@ class TestUtils(unittest.TestCase):
                 ]
             }],
             'logs': [{}],
-            'creationTime': '2021-09-22T18:10:46.934702072-04:00'
+            'creation_time': "2017-10-09T17:00:00"
         }
-        empty_log_str = json.dumps(empty_log_dict)
 
-        o1 = unmarshal(empty_log_str, Task)
-        self.assertEqual(o1.as_dict(), empty_log_dict)
+        expected = empty_log_dict.copy()
+        expected["creation_time"] = dateutil.parser.parse(
+            expected["creation_time"]
+        )
+
+        empty_log_str = json.dumps(empty_log_dict)
+        o1 = unmarshal(empty_log_dict, Task)
+
+        self.assertEqual(o1.as_dict(), expected)
+        self.assertEqual(o1.as_json(), empty_log_str)
