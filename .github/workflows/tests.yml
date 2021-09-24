@@ -17,7 +17,7 @@ jobs:
       run: pip install -r tests/requirements.txt
 
     - name: Install
-      run: python setup.py install
+      run: python setup.py install --user
 
     - name: Flake
       run: flake8 .
