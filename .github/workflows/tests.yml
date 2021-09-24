@@ -1,0 +1,26 @@
+name: py-test_file
+
+on: [ pull_request ]
+
+jobs:
+
+  test:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Check out code
+      uses: actions/checkout@v2
+
+    - name: Requirements
+      run: pip install -r requirements.txt
+
+    - name: Test Requirements
+      run: pip install -r tests/requirements.txt
+
+    - name: Install
+      run: python setup.py install
+
+    - name: Flake
+      run: flake8 .
+
+    - name: Test
+      run: python -m nose tests --with-coverage --cover-package tes --cover-min-percentage 80

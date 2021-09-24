@@ -124,3 +124,21 @@ class TestUtils(unittest.TestCase):
         )
 
         self.assertEqual(o1.as_dict(), expected)
+
+
+    def test_unmarshal_types(self):
+
+        empty_log_dict = {
+            'id': 'c55qjplpsjir0oo1kdj0',
+            'state': 'QUEUED',
+            'name': 'toil-bbc72af7-e11a-4831-9392-669ea6c309a1-0',
+            'executors': [{
+                'image': 'quay.io/ucsc_cgl/toil:5.5.0a1-6b31ed0bffc4a28d0450dd4da90db32f26a11fbc-py3.7',
+                'command': ['_toil_kubernetes_executor', 'gAWVGwAAAAAAAAB9lIwHY29tbWFuZJSMCnNsZWVwIDEwMDCUcy4=']
+            }],
+            'logs': [{}],
+            'creationTime': '2021-09-22T18:10:46.934702072-04:00'
+        }
+        empty_log_str = json.dumps(empty_log_dict)
+
+        o1 = unmarshal(empty_log_str, Task)
