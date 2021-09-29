@@ -98,13 +98,3 @@ def unmarshal(j, o, convert_camel_case=True):
         raise UnmarshalError(msg)
 
     return output
-
-
-def raise_for_status(response):
-    try:
-        response.raise_for_status()
-    except Exception:
-        raise HTTPError(
-            "\n<status code> %d\n<response> %s\n" %
-            (response.status_code, response.text)
-        )

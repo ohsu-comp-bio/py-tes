@@ -12,7 +12,7 @@ from requests.utils import urlparse
 from tes.models import (Task, ListTasksRequest, ListTasksResponse, ServiceInfo,
                         GetTaskRequest, CancelTaskRequest, CreateTaskResponse,
                         strconv)
-from tes.utils import unmarshal, raise_for_status, TimeoutError
+from tes.utils import unmarshal, TimeoutError
 
 
 def process_url(value):
@@ -47,7 +47,7 @@ class HTTPClient(object):
         response = requests.get(
             "%s/v1/tasks/service-info" % (self.url),
             **kwargs)
-        raise_for_status(response)
+        response.raise_for_status()
         return unmarshal(response.json(), ServiceInfo)
 
     def create_task(self, task):
@@ -61,7 +61,7 @@ class HTTPClient(object):
             "%s/v1/tasks" % (self.url),
             **kwargs
         )
-        raise_for_status(response)
+        response.raise_for_status()
         return unmarshal(response.json(), CreateTaskResponse).id
 
     def get_task(self, task_id, view="BASIC"):
@@ -71,7 +71,7 @@ class HTTPClient(object):
         response = requests.get(
             "%s/v1/tasks/%s" % (self.url, req.id),
             **kwargs)
-        raise_for_status(response)
+        response.raise_for_status()
         return unmarshal(response.json(), Task)
 
     def cancel_task(self, task_id):
@@ -80,7 +80,7 @@ class HTTPClient(object):
         response = requests.post(
             "%s/v1/tasks/%s:cancel" % (self.url, req.id),
             **kwargs)
-        raise_for_status(response)
+        response.raise_for_status()
         return
 
     def list_tasks(self, view="MINIMAL", page_size=None, page_token=None):
@@ -97,7 +97,7 @@ class HTTPClient(object):
         response = requests.get(
             "%s/v1/tasks" % (self.url),
             **kwargs)
-        raise_for_status(response)
+        response.raise_for_status()
         return unmarshal(response.json(), ListTasksResponse)
 
     def wait(self, task_id, timeout=None):
