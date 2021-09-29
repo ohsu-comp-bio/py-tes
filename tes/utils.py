@@ -3,7 +3,6 @@ from __future__ import absolute_import, print_function, unicode_literals
 import json
 import re
 
-from requests import HTTPError
 from tes.models import (Task, Input, Output, Resources, Executor,
                         TaskLog, ExecutorLog, OutputFileLog)
 
