@@ -42,13 +42,24 @@ def unmarshal(j, o, convert_camel_case=True):
     else:
         d = m
 
-    omap = {
-        "tasks": Task,
-        "inputs": Input,
-        "outputs": (Output, OutputFileLog),
-        "logs": (ExecutorLog, TaskLog),
-        "resources": Resources,
-        "executors": Executor
+    fullOmap = {
+        "Executor": {
+            "logs": ExecutorLog
+        },
+        "Task": {
+            "logs": TaskLog,
+            "inputs": Input,
+            "outputs": Output,
+            "resources": Resources,
+            "executors": Executor
+        },
+        "TaskLog": {
+            "outputs": OutputFileLog,
+            "logs": ExecutorLog
+        },
+        "ListTasksResponse": {
+            "tasks": Task,
+        }
     }
 
     def _unmarshal(v, obj):
@@ -63,6 +74,8 @@ def unmarshal(j, o, convert_camel_case=True):
     r = {}
     for k, v in d.items():
         field = v
+        print("class", o.__name__)
+        omap = fullOmap.get(o.__name__, {})
         if k in omap:
             if isinstance(omap[k], tuple):
                 try:
