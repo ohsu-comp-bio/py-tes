@@ -73,7 +73,6 @@ def unmarshal(j, o, convert_camel_case=True):
     r = {}
     for k, v in d.items():
         field = v
-        print("class", o.__name__)
         omap = fullOmap.get(o.__name__, {})
         if k in omap:
             if isinstance(omap[k], tuple):
