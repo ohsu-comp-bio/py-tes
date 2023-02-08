@@ -94,10 +94,11 @@ class Base(object):
             return _drop_none(obj)
         return obj
 
-    def as_json(self, drop_empty=True):
+    def as_json(self, drop_empty=True, **kwargs):
         return json.dumps(
             self.as_dict(drop_empty),
-            default=datetime_json_handler
+            default=datetime_json_handler,
+            **kwargs
         )
 
 
