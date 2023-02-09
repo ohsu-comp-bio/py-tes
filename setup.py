@@ -37,25 +37,20 @@ setup(
     url="https://github.com/ohsu-comp-bio/py-tes",
     license="MIT",
     packages=find_packages(),
-    python_requires=">=2.7, <4",
-    install_requires=[
-        "attrs>=17.4.0",
-        "future>=0.16.0",
-        "python-dateutil>=2.6.1",
-        "requests>=2.18.1"
-    ],
+    python_requires=">=3.7, <4",
+    install_requires=read("requirements.txt").splitlines(),
     zip_safe=True,
     classifiers=[
-        "Development Status :: 3 - Alpha",
+        "Development Status :: 4 - Beta",
         "Intended Audience :: Developers",
         "Natural Language :: English",
         "License :: OSI Approved :: MIT License",
         "Topic :: Software Development :: Libraries",
-        "Programming Language :: Python :: 2",
-        "Programming Language :: Python :: 2.7",
         "Programming Language :: Python :: 3",
-        "Programming Language :: Python :: 3.4",
-        "Programming Language :: Python :: 3.5",
-        "Programming Language :: Python :: 3.6"
+        "Programming Language :: Python :: 3.7",
+        "Programming Language :: Python :: 3.8",
+        "Programming Language :: Python :: 3.9"
+        "Programming Language :: Python :: 3.10"
+        "Programming Language :: Python :: 3.11"
     ],
 )

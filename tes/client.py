@@ -1,13 +1,11 @@
-from __future__ import absolute_import, print_function, unicode_literals
-
 import re
 import requests
 import time
 
 from attr import attrs, attrib
 from attr.validators import instance_of, optional
-from builtins import str
-from requests.utils import urlparse
+from urllib.parse import urlparse
+from typing import Any, Dict, Optional
 
 from tes.models import (Task, ListTasksRequest, ListTasksResponse, ServiceInfo,
                         GetTaskRequest, CancelTaskRequest, CreateTaskResponse,
@@ -21,19 +19,16 @@ def process_url(value):
 
 @attrs
 class HTTPClient(object):
-    url = attrib(converter=process_url)
-    timeout = attrib(default=10, validator=instance_of(int))
-    user = attrib(default=None,
-                  converter=strconv,
-                  validator=optional(instance_of(str)))
-    password = attrib(default=None,
-                      converter=strconv,
-                      validator=optional(instance_of(str)))
-    token = attrib(default=None,
-                   converter=strconv,
-                   validator=optional(instance_of(str)))
+    url: str = attrib(converter=process_url)
+    timeout: int = attrib(default=10, validator=instance_of(int))
+    user: Optional[str] = attrib(
+        default=None, converter=strconv, validator=optional(instance_of(str)))
+    password: Optional[str] = attrib(
+        default=None, converter=strconv, validator=optional(instance_of(str)))
+    token: Optional[str] = attrib(
+        default=None, converter=strconv, validator=optional(instance_of(str)))
 
-    @url.validator
+    @url.validator  # type: ignore
     def __check_url(self, attribute, value):
         u = urlparse(value)
         if u.scheme not in ["http", "https"]:
@@ -42,48 +37,51 @@ class HTTPClient(object):
                 % ("http", "https")
             )
 
-    def get_service_info(self):
-        kwargs = self._request_params()
-        response = requests.get(
-            "%s/v1/tasks/service-info" % (self.url),
+    def get_service_info(self) -> ServiceInfo:
+        kwargs: Dict[str, Any] = self._request_params()
+        response: requests.Response = requests.get(
+            f"{self.url}/v1/tasks/service-info",
             **kwargs)
         response.raise_for_status()
         return unmarshal(response.json(), ServiceInfo)
 
-    def create_task(self, task):
+    def create_task(self, task: Task) -> CreateTaskResponse:
         if isinstance(task, Task):
             msg = task.as_json()
         else:
             raise TypeError("Expected Task instance")
 
-        kwargs = self._request_params(data=msg)
-        response = requests.post(
-            "%s/v1/tasks" % (self.url),
+        kwargs: Dict[str, Any] = self._request_params(data=msg)
+        response: requests.Response = requests.post(
+            f"{self.url}/v1/tasks",
             **kwargs
         )
         response.raise_for_status()
         return unmarshal(response.json(), CreateTaskResponse).id
 
-    def get_task(self, task_id, view="BASIC"):
-        req = GetTaskRequest(task_id, view)
-        payload = {"view": req.view}
-        kwargs = self._request_params(params=payload)
-        response = requests.get(
-            "%s/v1/tasks/%s" % (self.url, req.id),
+    def get_task(self, task_id: str, view: str = "BASIC") -> Task:
+        req: GetTaskRequest = GetTaskRequest(task_id, view)
+        payload: Dict[str, Optional[str]] = {"view": req.view}
+        kwargs: Dict[str, Any] = self._request_params(params=payload)
+        response: requests.Response = requests.get(
+            f"{self.url}/v1/tasks/{req.id}",
             **kwargs)
         response.raise_for_status()
         return unmarshal(response.json(), Task)
 
-    def cancel_task(self, task_id):
-        req = CancelTaskRequest(task_id)
-        kwargs = self._request_params()
-        response = requests.post(
-            "%s/v1/tasks/%s:cancel" % (self.url, req.id),
+    def cancel_task(self, task_id: str) -> None:
+        req: CancelTaskRequest = CancelTaskRequest(task_id)
+        kwargs: Dict[str, Any] = self._request_params()
+        response: requests.Response = requests.post(
+            f"{self.url}/v1/tasks/{req.id}:cancel",
             **kwargs)
         response.raise_for_status()
-        return
+        return None
 
-    def list_tasks(self, view="MINIMAL", page_size=None, page_token=None):
+    def list_tasks(
+        self, view: str = "MINIMAL", page_size: Optional[int] = None,
+        page_token: Optional[str] = None
+    ) -> ListTasksResponse:
         req = ListTasksRequest(
             view=view,
             page_size=page_size,
@@ -91,47 +89,49 @@ class HTTPClient(object):
             name_prefix=None,
             project=None
         )
-        msg = req.as_dict()
+        msg: Dict = req.as_dict()
 
-        kwargs = self._request_params(params=msg)
-        response = requests.get(
-            "%s/v1/tasks" % (self.url),
+        kwargs: Dict[str, Any] = self._request_params(params=msg)
+        response: requests.Response = requests.get(
+            f"{self.url}/v1/tasks",
             **kwargs)
         response.raise_for_status()
         return unmarshal(response.json(), ListTasksResponse)
 
-    def wait(self, task_id, timeout=None):
-        def check_success(data):
+    def wait(self, task_id: str, timeout=None) -> Task:
+        def check_success(data: Task) -> bool:
             return data.state not in ["QUEUED", "RUNNING", "INITIALIZING"]
 
         max_time = time.time() + timeout if timeout else None
 
+        response: Optional[Task] = None
         while True:
             try:
                 response = self.get_task(task_id, "MINIMAL")
             except Exception:
-                response = None
+                pass
 
             if response is not None:
                 if check_success(response):
                     return response
 
-            if max_time is not None and time.time() >= max_time:
-                raise TimeoutError("last_response: %s" % (response.as_dict()))
+                if max_time is not None and time.time() >= max_time:
+                    raise TimeoutError("last_response: {response.as_dict()}")
             time.sleep(0.5)
 
-    def _request_params(self, data=None, params=None):
-        kwargs = {'timeout': self.timeout}
-
+    def _request_params(
+        self, data: Optional[str] = None,
+        params: Optional[Dict] = None
+    ) -> Dict[str, Any]:
+        kwargs: Dict[str, Any] = {}
+        kwargs['timeout'] = self.timeout
+        kwargs['headers'] = {}
+        kwargs['headers']['Content-type'] = 'application/json'
+        kwargs['auth'] = (self.user, self.password)
         if data:
             kwargs['data'] = data
         if params:
             kwargs['params'] = params
         if self.token:
-            kwargs['headers'] = {'Content-type': 'application/json',
-                                 'Authorization': 'Bearer ' + self.token}
-        else:
-            kwargs['headers'] = {'Content-type': 'application/json'}
-            kwargs['auth'] = (self.user, self.password)
-
+            kwargs['headers']['Authorization'] = f"Bearer {self.token}"
         return kwargs

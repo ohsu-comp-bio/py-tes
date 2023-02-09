@@ -1,7 +1,7 @@
-from __future__ import absolute_import, print_function, unicode_literals
-
 import json
 import re
+
+from typing import Any, Dict, Type
 
 from tes.models import (Task, Input, Output, Resources, Executor,
                         TaskLog, ExecutorLog, OutputFileLog)
@@ -11,7 +11,7 @@ first_cap_re = re.compile('(.)([A-Z][a-z]+)')
 all_cap_re = re.compile('([a-z0-9])([A-Z])')
 
 
-def camel_to_snake(name):
+def camel_to_snake(name: str) -> str:
     s1 = first_cap_re.sub(r'\1_\2', name)
     return all_cap_re.sub(r'\1_\2', s1).lower()
 
@@ -26,15 +26,17 @@ class TimeoutError(Exception):
         Exception.__init__(self, *args, **kwargs)
 
 
-def unmarshal(j, o, convert_camel_case=True):
+def unmarshal(j: Any, o: Type, convert_camel_case=True) -> Any:
     if isinstance(j, str):
         m = json.loads(j)
     elif isinstance(j, dict):
         m = j
+    elif j is None:
+        return None
     else:
-        raise TypeError("j must be a str or dict")
+        raise TypeError("j must be a str, a dict or None")
 
-    d = {}
+    d: Dict[str, Any] = {}
     if convert_camel_case:
         for k, v in m.items():
             d[camel_to_snake(k)] = v
@@ -61,7 +63,7 @@ def unmarshal(j, o, convert_camel_case=True):
         }
     }
 
-    def _unmarshal(v, obj):
+    def _unmarshal(v: Any, obj: Type) -> Any:
         if isinstance(v, list):
             field = []
             for item in v:

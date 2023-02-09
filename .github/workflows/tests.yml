@@ -1,26 +1,35 @@
 name: py-test_file
 
-on: [ pull_request ]
+on: [pull_request]
 
 jobs:
-
   test:
     runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        version: ["3.7", "3.8", "3.9", "3.10", "3.11"]
+
     steps:
-    - name: Check out code
-      uses: actions/checkout@v2
+      - name: Check out code
+        uses: actions/checkout@v3
 
-    - name: Requirements
-      run: pip install -r requirements.txt
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.version }}
 
-    - name: Test Requirements
-      run: pip install -r tests/requirements.txt
+      - name: Install requirements
+        run: |
+          pip install -r requirements.txt
+          pip install -r tests/requirements.txt
 
-    - name: Install
-      run: python setup.py install --user
+      - name: Install app
+        run: pip install .
 
-    - name: Flake
-      run: flake8 .
+      - name: Lint with Flake8
+        run: flake8 .
 
-    - name: Test
-      run: python -m nose tests --with-coverage --cover-package tes --cover-min-percentage 80
+      - name: Run unit tests
+        run: coverage run --source tes -m pytest -W ignore::DeprecationWarning
