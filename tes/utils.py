@@ -1,3 +1,5 @@
+"""Exceptions and utilities."""
+
 import json
 import re
 
@@ -12,11 +14,20 @@ all_cap_re = re.compile('([a-z0-9])([A-Z])')
 
 
 def camel_to_snake(name: str) -> str:
+    """Converts camelCase to snake_case.
+
+    Args:
+        name: String to convert.
+
+    Returns:
+        Converted string.
+    """
     s1 = first_cap_re.sub(r'\1_\2', name)
     return all_cap_re.sub(r'\1_\2', s1).lower()
 
 
 class UnmarshalError(Exception):
+    """Raised when a JSON string cannot be unmarshalled to a TES model."""
     def __init__(self, *args, **kwargs):
         Exception.__init__(self, *args, **kwargs)
 
@@ -27,6 +38,19 @@ class TimeoutError(Exception):
 
 
 def unmarshal(j: Any, o: Type, convert_camel_case=True) -> Any:
+    """Unmarshal a JSON string to a TES model.
+
+    Args:
+        j: JSON string or dictionary to unmarshal.
+        o: TES model to unmarshal to.
+        convert_camel_case: Convert values in `j` from camelCase to snake_case.
+
+    Returns:
+        Unmarshalled TES model.
+
+    Raises:
+        UnmarshalError: If `j` cannot be unmarshalled to `o`.
+    """
     if isinstance(j, str):
         m = json.loads(j)
     elif isinstance(j, dict):

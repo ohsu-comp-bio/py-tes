@@ -19,6 +19,7 @@ eggs/
 # Misc
 test_tmp
 *venv*
+docs/docstrings
 
 # Created by https://www.toptal.com/developers/gitignore/api/python
 # Edit at https://www.toptal.com/developers/gitignore?templates=python
