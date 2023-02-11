@@ -1,6 +1,5 @@
 import re
 import requests
-import time
 
 from attr import attrs, attrib
 from attr.validators import instance_of, optional
@@ -10,7 +9,7 @@ from typing import Any, Dict, Optional
 from tes.models import (Task, ListTasksRequest, ListTasksResponse, ServiceInfo,
                         GetTaskRequest, CancelTaskRequest, CreateTaskResponse,
                         strconv)
-from tes.utils import unmarshal, TimeoutError
+from tes.utils import unmarshal
 
 
 def process_url(value):
@@ -97,27 +96,6 @@ class HTTPClient(object):
             **kwargs)
         response.raise_for_status()
         return unmarshal(response.json(), ListTasksResponse)
-
-    def wait(self, task_id: str, timeout=None) -> Task:
-        def check_success(data: Task) -> bool:
-            return data.state not in ["QUEUED", "RUNNING", "INITIALIZING"]
-
-        max_time = time.time() + timeout if timeout else None
-
-        response: Optional[Task] = None
-        while True:
-            try:
-                response = self.get_task(task_id, "MINIMAL")
-            except Exception:
-                pass
-
-            if response is not None:
-                if check_success(response):
-                    return response
-
-                if max_time is not None and time.time() >= max_time:
-                    raise TimeoutError("last_response: {response.as_dict()}")
-            time.sleep(0.5)
 
     def _request_params(
         self, data: Optional[str] = None,
