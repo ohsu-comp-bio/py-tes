@@ -24,13 +24,13 @@ class TestHTTPClient(unittest.TestCase):
     def test_cli(self):
         cli = HTTPClient(url="http://fakehost:8000//", timeout=5)
         self.assertEqual(cli.url, "http://fakehost:8000")
-        self.assertEqual(cli.timeout, 5)
+        self.assertAlmostEqual(cli.timeout, 5)
 
         with self.assertRaises(ValueError):
             HTTPClient(url="fakehost:8000", timeout=5)
 
         with self.assertRaises(ValueError):
-            HTTPClient(url="htpp://fakehost:8000", timeout="5")
+            HTTPClient(url="htpp://fakehost:8000", timeout="5")  # type: ignore
 
     def test_create_task(self):
         with requests_mock.Mocker() as m:
@@ -41,7 +41,7 @@ class TestHTTPClient(unittest.TestCase):
             )
             self.cli.create_task(self.task)
             self.assertEqual(m.last_request.text, self.task.as_json())
-            self.assertEqual(m.last_request.timeout, self.cli.timeout)
+            self.assertAlmostEqual(m.last_request.timeout, self.cli.timeout)
 
             m.post(
                 "%s/v1/tasks" % (self.mock_url),
@@ -49,6 +49,9 @@ class TestHTTPClient(unittest.TestCase):
             )
             with self.assertRaises(requests.HTTPError):
                 self.cli.create_task(self.task)
+
+            with self.assertRaises(TypeError):
+                self.cli.create_task('not_a_task_object')  # type: ignore
 
     def test_get_task(self):
         with requests_mock.Mocker() as m:
@@ -65,7 +68,7 @@ class TestHTTPClient(unittest.TestCase):
                 m.last_request.url,
                 "%s/v1/tasks/%s?view=MINIMAL" % (self.mock_url, self.mock_id)
             )
-            self.assertEqual(m.last_request.timeout, self.cli.timeout)
+            self.assertAlmostEqual(m.last_request.timeout, self.cli.timeout)
 
             m.get(
                 "%s/v1/tasks/%s" % (self.mock_url, self.mock_id),
@@ -88,7 +91,7 @@ class TestHTTPClient(unittest.TestCase):
                 m.last_request.url,
                 "%s/v1/tasks?view=MINIMAL" % (self.mock_url)
             )
-            self.assertEqual(m.last_request.timeout, self.cli.timeout)
+            self.assertAlmostEqual(m.last_request.timeout, self.cli.timeout)
 
             # empty response
             m.get(
@@ -121,7 +124,7 @@ class TestHTTPClient(unittest.TestCase):
                 m.last_request.url,
                 "%s/v1/tasks/%s:cancel" % (self.mock_url, self.mock_id)
             )
-            self.assertEqual(m.last_request.timeout, self.cli.timeout)
+            self.assertAlmostEqual(m.last_request.timeout, self.cli.timeout)
 
             m.post(
                 "%s/v1/tasks/%s:cancel" % (self.mock_url, self.mock_id),
@@ -142,7 +145,7 @@ class TestHTTPClient(unittest.TestCase):
                 m.last_request.url,
                 "%s/v1/tasks/service-info" % (self.mock_url)
             )
-            self.assertEqual(m.last_request.timeout, self.cli.timeout)
+            self.assertAlmostEqual(m.last_request.timeout, self.cli.timeout)
 
             m.get(
                 "%s/v1/tasks/service-info" % (self.mock_url),
@@ -177,3 +180,25 @@ class TestHTTPClient(unittest.TestCase):
                 ]
             )
             self.cli.wait(self.mock_id, timeout=2)
+
+    def test_request_params(self):
+
+        cli = HTTPClient(url="http://fakehost:8000", timeout=5)
+        vals = cli._request_params()
+        self.assertAlmostEqual(vals["timeout"], 5)
+        self.assertEqual(vals["headers"]["Content-type"], "application/json")
+        self.assertRaises(KeyError, lambda: vals["headers"]["Authorization"])
+        self.assertRaises(KeyError, lambda: vals["auth"])
+        self.assertRaises(KeyError, lambda: vals["data"])
+        self.assertRaises(KeyError, lambda: vals["params"])
+
+        cli = HTTPClient(url="http://fakehost:8000", user="user",
+                         password="password", token="token")
+        vals = cli._request_params(data='{"json": "string"}',
+                                   params={"query_param": "value"})
+        self.assertAlmostEqual(vals["timeout"], 10)
+        self.assertEqual(vals["headers"]["Content-type"], "application/json")
+        self.assertEqual(vals["headers"]["Authorization"], "Bearer token")
+        self.assertEqual(vals["auth"], ("user", "password"))
+        self.assertEqual(vals["data"], '{"json": "string"}')
+        self.assertEqual(vals["params"], {"query_param": "value"})

@@ -32,4 +32,9 @@ jobs:
         run: flake8 .
 
       - name: Run unit tests
-        run: coverage run --source tes -m pytest -W ignore::DeprecationWarning
+        run: |
+          pytest \
+            --cov=tes/ \
+            --cov-branch \
+            --cov-report=term-missing \
+            --cov-fail-under=99
