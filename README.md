@@ -42,6 +42,30 @@ cli.cancel_task(task_id)
 tasks_list = cli.list_tasks(view="MINIMAL")  # default view
 ```
 
+> For backward compatibility and flexibility, `py-tes` is deliberately
+> forgiving with respect to the path at which the TES API is hosted. It will
+> try to locate the API by appending `/ga4gh/tes/v1` (standard location
+> since TES v0.4.0) and `/v1` (standard location up to TES v0.3.0) to the host
+> URL provided during client instantiation, in that order. To support TES APIs
+> hosted at non-standard locations, `py-tes` will then try to locate the API at
+> the provided host URL, without any suffix.  
+>  
+> Similarly, `py-tes` currently supports legacy TES implementations where the
+> service info endpoint is hosted at `/tasks/service-info` (standard route up
+> until TES 0.4.0) - if it does not find the endpoint at route `/service-info`
+> (standard location since TES 0.5.0).  
+>  
+> Please note that this flexibility comes at cost: Up to six HTTP requests
+> (accessing the service info via `/tasks/service-info` from a TES API at a
+> non-standard location) may be necessary to locate the API. Therefore, if you
+> are dealing with such TES services, you may need to increase the `timeout`
+> duration (passed during client instantiation) beyond the default value of 10
+> seconds.  
+>  
+> Please also consider asking your TES provider(s) to adopt the standard suffix
+> and endpoint routes, as we may drop support for flexible API hosting in the
+> future.
+
 ### How to...
 
 > Makes use of the objects above...
