@@ -174,6 +174,35 @@ class TestHTTPClient(unittest.TestCase):
             )
             with self.assertRaises(requests.HTTPError):
                 self.cli.get_service_info()
+<<<<<<< HEAD
+=======
+
+    def test_wait(self):
+        with self.assertRaises(TimeoutError):
+            with requests_mock.Mocker() as m:
+                m.get(
+                    "%s/ga4gh/tes/v1/tasks/%s" % (self.mock_url, self.mock_id),
+                    status_code=200,
+                    json={
+                        "id": self.mock_id,
+                        "state": "RUNNING",
+                    }
+                )
+                self.cli.wait(self.mock_id, timeout=1)
+
+        with requests_mock.Mocker() as m:
+            m.get(
+                "%s/ga4gh/tes/v1/tasks/%s" % (self.mock_url, self.mock_id),
+                [
+                    {"status_code": 200,
+                     "json": {"id": self.mock_id, "state": "INITIALIZING"}},
+                    {"status_code": 200,
+                     "json": {"id": self.mock_id, "state": "RUNNING"}},
+                    {"status_code": 200,
+                     "json": {"id": self.mock_id, "state": "COMPLETE"}}
+                ]
+            )
+            self.cli.wait(self.mock_id, timeout=2)
 
 
 def test_append_suffixes_to_url():
