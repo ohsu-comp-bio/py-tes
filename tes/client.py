@@ -78,11 +78,9 @@ def send_request(
             response = getattr(requests, method)(
                 path.format(**kwargs), **kwargs_requests)
         except requests.exceptions.RequestException as exc:
-            print("EXCEPTION")
             http_exceptions[path] = exc
             continue
         if response.status_code != 404:
-            print("SUCCESS")
             break
 
     if response.status_code is None:
