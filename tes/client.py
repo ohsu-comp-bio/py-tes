@@ -193,14 +193,14 @@ class HTTPClient(object):
             time.sleep(0.5)
 
     def _request_params(
-        self, data: Optional[str] = None,
-        params: Optional[Dict] = None
+        self, data: Optional[str] = None, params: Optional[Dict] = None
     ) -> Dict[str, Any]:
         kwargs: Dict[str, Any] = {}
         kwargs['timeout'] = self.timeout
         kwargs['headers'] = {}
         kwargs['headers']['Content-type'] = 'application/json'
-        kwargs['auth'] = (self.user, self.password)
+        if self.user is not None and self.password is not None:
+            kwargs['auth'] = (self.user, self.password)
         if data:
             kwargs['data'] = data
         if params:

@@ -29,7 +29,12 @@ jobs:
         run: pip install .
 
       - name: Lint with Flake8
-        run: flake8 .
+        run: flake8 --max-line-length=120 .
 
       - name: Run unit tests
-        run: coverage run --source tes -m pytest -W ignore::DeprecationWarning
+        run: |
+          pytest \
+            --cov=tes/ \
+            --cov-branch \
+            --cov-report=term-missing \
+            --cov-fail-under=99
