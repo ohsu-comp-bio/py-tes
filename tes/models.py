@@ -266,6 +266,12 @@ class Task(Base):
     description = attrib(
         default=None, converter=strconv, validator=optional(instance_of(str))
     )
+
+    # This feature is not yet added to the TES specification
+    # To be done in a future release (probably 1.2)
+    callback_url = attrib(
+        default=None, converter=strconv, validator=optional(instance_of(str))
+    )
     inputs = attrib(
         default=None, validator=optional(list_of(Input))
     )
