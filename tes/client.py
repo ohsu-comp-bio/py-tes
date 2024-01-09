@@ -93,10 +93,14 @@ def send_request(
     return response
 
 
+def process_url(value):
+    return re.sub("[/]+$", "", value)
+
+
 @attrs
 class HTTPClient(object):
     """HTTP client class for interacting with the TES API."""
-    url: str = attrib(converter=process_url)
+    url: str = attrib(converter=process_url, validator=instance_of(str))
     timeout: int = attrib(default=10, validator=instance_of(int))
     user: Optional[str] = attrib(
         default=None, converter=strconv, validator=optional(instance_of(str)))

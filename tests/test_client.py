@@ -24,7 +24,7 @@ class TestHTTPClient(unittest.TestCase):
 
     def test_cli(self):
         cli = HTTPClient(url="http://fakehost:8000//", timeout=5)
-        self.assertEqual(cli.url, "http://fakehost:8000//")
+        self.assertEqual(cli.url, "http://fakehost:8000")
         self.assertEqual(cli.urls, [
             "http://fakehost:8000/ga4gh/tes/v1",
             "http://fakehost:8000/v1",
