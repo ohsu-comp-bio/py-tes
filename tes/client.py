@@ -1,3 +1,6 @@
+"""TES access methods and helper functions."""
+
+import re
 import requests
 import time
 
@@ -92,7 +95,8 @@ def send_request(
 
 @attrs
 class HTTPClient(object):
-    url: str = attrib(validator=instance_of(str))
+    """HTTP client class for interacting with the TES API."""
+    url: str = attrib(converter=process_url)
     timeout: int = attrib(default=10, validator=instance_of(int))
     user: Optional[str] = attrib(
         default=None, converter=strconv, validator=optional(instance_of(str)))
@@ -109,6 +113,17 @@ class HTTPClient(object):
 
     @url.validator  # type: ignore
     def __check_url(self, attribute, value):
+        """Validate URL scheme of TES instance.
+
+        `attrs` validator function for `HTTPClient.url`.
+
+        Args:
+            attribute: Attribute being validated.
+            value: Attribute value.
+
+        Raises:
+            ValueError: If URL scheme is unsupported.
+        """
         u = urlparse(value)
         if u.scheme not in ["http", "https"]:
             raise ValueError(
@@ -117,6 +132,11 @@ class HTTPClient(object):
             )
 
     def get_service_info(self) -> ServiceInfo:
+        """Access method for `GET /service-info`.
+
+        Returns:
+            `tes.models.ServiceInfo` instance.
+        """
         kwargs: Dict[str, Any] = self._request_params()
         paths = append_suffixes_to_url(
             self.urls, ["service-info", "tasks/service-info"]
@@ -125,6 +145,17 @@ class HTTPClient(object):
         return unmarshal(response.json(), ServiceInfo)
 
     def create_task(self, task: Task) -> CreateTaskResponse:
+        """Access method for `POST /tasks`.
+
+        Args:
+            task: `tes.models.Task` instance.
+
+        Returns:
+            `tes.models.CreateTaskResponse` instance.
+
+        Raises:
+            TypeError: If `task` is not a `tes.models.Task` instance.
+        """
         if isinstance(task, Task):
             msg = task.as_json()
         else:
@@ -137,6 +168,15 @@ class HTTPClient(object):
         return unmarshal(response.json(), CreateTaskResponse).id
 
     def get_task(self, task_id: str, view: str = "BASIC") -> Task:
+        """Access method for `GET /tasks/{id}`.
+
+        Args:
+            task_id: TES Task ID.
+            view: Task info verbosity. One of `MINIMAL`, `BASIC` and `FULL`.
+
+        Returns:
+            `tes.models.Task` instance.
+        """
         req: GetTaskRequest = GetTaskRequest(task_id, view)
         payload: Dict[str, Optional[str]] = {"view": req.view}
         kwargs: Dict[str, Any] = self._request_params(params=payload)
@@ -146,6 +186,11 @@ class HTTPClient(object):
         return unmarshal(response.json(), Task)
 
     def cancel_task(self, task_id: str) -> None:
+        """Access method for `POST /tasks/{id}:cancel`.
+
+        Args:
+            task_id: TES Task ID.
+        """
         req: CancelTaskRequest = CancelTaskRequest(task_id)
         kwargs: Dict[str, Any] = self._request_params()
         paths = append_suffixes_to_url(self.urls, ["/tasks/{task_id}:cancel"])
@@ -157,6 +202,16 @@ class HTTPClient(object):
         self, view: str = "MINIMAL", page_size: Optional[int] = None,
         page_token: Optional[str] = None
     ) -> ListTasksResponse:
+        """Access method for `GET /tasks`.
+
+        Args:
+            view: Task info verbosity. One of `MINIMAL`, `BASIC` and `FULL`.
+            page_size: Number of tasks to return.
+            page_token: Token to retrieve the next page of tasks.
+
+        Returns:
+            `tes.models.ListTasksResponse` instance.
+        """
         req = ListTasksRequest(
             view=view,
             page_size=page_size,
@@ -195,6 +250,14 @@ class HTTPClient(object):
     def _request_params(
         self, data: Optional[str] = None, params: Optional[Dict] = None
     ) -> Dict[str, Any]:
+        """Compile request parameters.
+
+        Args:
+            data: JSON payload to be sent in the request body.
+
+        Returns:
+            Dictionary of request parameters.
+        """
         kwargs: Dict[str, Any] = {}
         kwargs['timeout'] = self.timeout
         kwargs['headers'] = {}

@@ -1,4 +1,4 @@
-name: py-test_file
+name: Linting and testing
 
 on: [pull_request]
 

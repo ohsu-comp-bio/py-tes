@@ -1,3 +1,5 @@
+"""TES models, converters, validators and helpers."""
+
 from __future__ import absolute_import, print_function, unicode_literals
 
 import dateutil.parser
@@ -12,9 +14,14 @@ from typing import Any, Dict, List, Optional, Tuple, Type, Union
 
 @attrs(repr=False)
 class _ListOfValidator(object):
+    """`attrs` validator class for lists."""
+
     type: Type = attrib()
 
+    def __call__(self, inst, attr, value):
+        """We use a callable class to be able to change the ``__repr__``."""
     def __call__(self, inst, attr, value) -> None:
+        """We use a callable class to be able to change the ``__repr__``."""
         if not all([isinstance(n, self.type) for n in value]):
             raise TypeError(
                 f"'{attr.name}' must be a list of {self.type!r} (got "
@@ -26,10 +33,26 @@ class _ListOfValidator(object):
 
 
 def list_of(_type: Any) -> _ListOfValidator:
+    """`attrs` validator for lists of a given type.
+
+    Args:
+        _type: Type to validate.
+
+    Returns:
+        `attrs` validator for the given type.
+    """
     return _ListOfValidator(_type)
 
 
 def _drop_none(obj: Any) -> Any:
+    """Drop `None` values from a nested data structure.
+
+    Args:
+        obj: Object to process.
+
+    Returns:
+        Object with `None` values removed.
+    """
     if isinstance(obj, (list, tuple, set)):
         return type(obj)(_drop_none(x) for x in obj if x is not None)
     elif isinstance(obj, dict):
@@ -42,6 +65,15 @@ def _drop_none(obj: Any) -> Any:
 
 
 def strconv(value: Any) -> Any:
+    """Explicitly cast a string-like value or list thereof to string(s).
+
+    Args:
+        value: Value to convert.
+
+    Returns:
+        Converted value. If `value` is a list, all elements are converted to
+        strings. If `value` is not string-like, it will be returned as is.
+    """
     if isinstance(value, (tuple, list)):
         if all([isinstance(n, str) for n in value]):
             return [str(n) for n in value]
@@ -56,18 +88,45 @@ def strconv(value: Any) -> Any:
 # since an int64 value is encoded as a string in json we need to handle
 # conversion
 def int64conv(value: Optional[str]) -> Optional[int]:
-    if value is None:
-        return value
-    return int(value)
+    """Convert string to `int64`.
+
+    Args:
+        value: String to convert.
+
+    Returns:
+        Converted value.
+    """
+    if value is not None:
+        return int(value)
+    return value
 
 
 def timestampconv(value: Optional[str]) -> Optional[datetime]:
+    """Convert string to `datetime`.
+
+    Args:
+        value: String to convert.
+
+    Returns:
+        Converted value.
+    """
     if value is None:
         return value
     return dateutil.parser.parse(value)
 
 
 def datetime_json_handler(x: Any) -> str:
+    """JSON handler for `datetime` objects.
+
+    Args:
+        x: Object to convert.
+
+    Returns:
+        Converted object.
+
+    Raises:
+        TypeError: If `x` is not a `datetime` object.
+    """
     if isinstance(x, datetime):
         return x.isoformat()
     raise TypeError("Unknown type")
@@ -75,6 +134,7 @@ def datetime_json_handler(x: Any) -> str:
 
 @attrs
 class Base(object):
+    """`attrs` base class for all TES and helper models."""
 
     def as_dict(self, drop_empty: bool = True) -> Dict[str, Any]:
         obj = asdict(self)
@@ -92,6 +152,8 @@ class Base(object):
 
 @attrs
 class Input(Base):
+    """TES `tesInput` `attrs` model class."""
+
     url: Optional[str] = attrib(
         default=None, converter=strconv, validator=optional(instance_of(str))
     )
@@ -114,6 +176,8 @@ class Input(Base):
 
 @attrs
 class Output(Base):
+    """TES `tesOutput` `attrs` model class."""
+
     url: Optional[str] = attrib(
         default=None, converter=strconv, validator=optional(instance_of(str))
     )
@@ -133,6 +197,8 @@ class Output(Base):
 
 @attrs
 class Resources(Base):
+    """TES `tesResources` `attrs` model class."""
+
     cpu_cores: Optional[int] = attrib(
         default=None, validator=optional(instance_of(int))
     )
@@ -152,6 +218,8 @@ class Resources(Base):
 
 @attrs
 class Executor(Base):
+    """TES `tesExecutor` `attrs` model class."""
+
     image: str = attrib(
         converter=strconv, validator=instance_of(str)
     )
@@ -177,6 +245,8 @@ class Executor(Base):
 
 @attrs
 class ExecutorLog(Base):
+    """TES `tesExecutorLog` `attrs` model class."""
+
     start_time: datetime = attrib(
         default=None,
         converter=timestampconv,
@@ -200,6 +270,8 @@ class ExecutorLog(Base):
 
 @attrs
 class OutputFileLog(Base):
+    """TES `tesOutputFileLog` `attrs` model class."""
+
     url: Optional[str] = attrib(
         default=None, converter=strconv, validator=optional(instance_of(str))
     )
@@ -213,6 +285,8 @@ class OutputFileLog(Base):
 
 @attrs
 class TaskLog(Base):
+    """TES `tesTaskLog` `attrs` model class."""
+
     start_time: datetime = attrib(
         default=None,
         converter=timestampconv,
@@ -239,6 +313,8 @@ class TaskLog(Base):
 
 @attrs
 class Task(Base):
+    """TES `tesTask` `attrs` model class."""
+
     id: Optional[str] = attrib(
         default=None, converter=strconv, validator=optional(instance_of(str))
     )
@@ -283,6 +359,13 @@ class Task(Base):
     )
 
     def is_valid(self) -> Tuple[bool, Union[None, TypeError]]:
+        """Validate a `Task` model instance.
+
+        Returns:
+            A tuple containing a boolean indicating whether the model is
+            valid, and a `TypeError` if the model is invalid, or `None` if it
+            is.
+        """
         errs = []
         if self.executors is None or len(self.executors) == 0:
             errs.append("Must provide one or more Executors")
@@ -349,6 +432,8 @@ class Task(Base):
 
 @attrs
 class GetTaskRequest(Base):
+    """`attrs` model class for `GET /tasks/{id}` request parameters."""
+
     id: str = attrib(
         converter=strconv, validator=instance_of(str)
     )
@@ -359,6 +444,8 @@ class GetTaskRequest(Base):
 
 @attrs
 class CreateTaskResponse(Base):
+    """TES `tesCreateTaskResponse` `attrs` model class."""
+
     id: str = attrib(
         converter=strconv, validator=instance_of(str)
     )
@@ -366,11 +453,13 @@ class CreateTaskResponse(Base):
 
 @attrs
 class ServiceInfoRequest(Base):
-    pass
+    """`attrs` model class for `GET /service-info` request parameters."""
 
 
 @attrs
 class ServiceInfo(Base):
+    """TES `tesServiceInfo` `attrs` model class."""
+
     name: Optional[str] = attrib(
         default=None, converter=strconv, validator=optional(instance_of(str))
     )
@@ -384,6 +473,8 @@ class ServiceInfo(Base):
 
 @attrs
 class CancelTaskRequest(Base):
+    """`attrs` model class for `POST /tasks/{id}:cancel` request parameters."""
+
     id: str = attrib(
         converter=strconv, validator=instance_of(str)
     )
@@ -391,11 +482,13 @@ class CancelTaskRequest(Base):
 
 @attrs
 class CancelTaskResponse(Base):
-    pass
+    """TES `tesCancelTaskResponse` `attrs` model class."""
 
 
 @attrs
 class ListTasksRequest(Base):
+    """`attrs` model class for `GET /tasks` request parameters."""
+
     project: Optional[str] = attrib(
         default=None, converter=strconv, validator=optional(instance_of(str))
     )
@@ -415,6 +508,8 @@ class ListTasksRequest(Base):
 
 @attrs
 class ListTasksResponse(Base):
+    """TES `tesListTasksResponse` `attrs` model class."""
+
     tasks: Optional[List[Task]] = attrib(
         default=None, validator=optional(list_of(Task))
     )
