@@ -12,7 +12,7 @@ from datetime import datetime
 from typing import Any, Dict, List, Optional, Tuple, Type, Union
 
 
-@attrs
+@attrs(repr=False)
 class _ListOfValidator(object):
     """`attrs` validator class for lists."""
 
@@ -20,11 +20,12 @@ class _ListOfValidator(object):
 
     def __call__(self, inst, attr, value):
         """We use a callable class to be able to change the ``__repr__``."""
+    def __call__(self, inst, attr, value) -> None:
+        """We use a callable class to be able to change the ``__repr__``."""
         if not all([isinstance(n, self.type) for n in value]):
             raise TypeError(
-                "'{attr.name}' must be a list of {self.type!r} (got {value!r} "
-                "that is a list of {values[0].__class__!r}).",
-                attr, self.type, value,
+                f"'{attr.name}' must be a list of {self.type!r} (got "
+                f"{value!r}", attr
             )
 
     def __repr__(self) -> str:
@@ -109,9 +110,9 @@ def timestampconv(value: Optional[str]) -> Optional[datetime]:
     Returns:
         Converted value.
     """
-    if value is not None:
-        return dateutil.parser.parse(value)
-    return value
+    if value is None:
+        return value
+    return dateutil.parser.parse(value)
 
 
 def datetime_json_handler(x: Any) -> str:
@@ -372,7 +373,7 @@ class Task(Base):
             for e in self.executors:
                 if e.image is None:
                     errs.append("Executor image must be provided")
-                if len(e.command) == 0:
+                if e.command is None or len(e.command) == 0:
                     errs.append("Executor command must be provided")
                 if e.stdin is not None:
                     if not os.path.isabs(e.stdin):
@@ -384,8 +385,8 @@ class Task(Base):
                     if not os.path.isabs(e.stderr):
                         errs.append("Executor stderr must be an absolute path")
                 if e.env is not None:
-                    for k, v in e.env:
-                        if not isinstance(k, str) and not isinstance(k, str):
+                    for k, v in e.env.items():
+                        if not isinstance(k, str) and not isinstance(v, str):
                             errs.append(
                                 "Executor env keys and values must be StrType"
                             )
@@ -417,7 +418,7 @@ class Task(Base):
                         errs.append("Volume paths must be absolute")
 
         if self.tags is not None:
-            for k, v in self.tags:
+            for k, v in self.tags.items():
                 if not isinstance(k, str) and not isinstance(k, str):
                     errs.append(
                         "Tag keys and values must be StrType"

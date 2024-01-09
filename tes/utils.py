@@ -51,14 +51,20 @@ def unmarshal(j: Any, o: Type, convert_camel_case=True) -> Any:
     Raises:
         UnmarshalError: If `j` cannot be unmarshalled to `o`.
     """
+    m: Any = None
     if isinstance(j, str):
-        m = json.loads(j)
-    elif isinstance(j, dict):
-        m = j
+        try:
+            m = json.loads(j)
+        except json.decoder.JSONDecodeError:
+            pass
     elif j is None:
         return None
     else:
-        raise TypeError("j must be a str, a dict or None")
+        m = j
+
+    if not isinstance(m, dict):
+        raise TypeError("j must be a dictionary, a JSON string evaluation to "
+                        "a dictionary, or None")
 
     d: Dict[str, Any] = {}
     if convert_camel_case:
@@ -101,16 +107,8 @@ def unmarshal(j: Any, o: Type, convert_camel_case=True) -> Any:
         field = v
         omap = fullOmap.get(o.__name__, {})
         if k in omap:
-            if isinstance(omap[k], tuple):
-                try:
-                    obj = omap[k][0]
-                    field = _unmarshal(v, obj)
-                except Exception:
-                    obj = omap[k][1]
-                    field = _unmarshal(v, obj)
-            else:
-                obj = omap[k]
-                field = _unmarshal(v, obj)
+            obj = omap[k]
+            field = _unmarshal(v, obj)
         r[k] = field
 
     try:
