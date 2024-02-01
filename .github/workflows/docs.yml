@@ -33,4 +33,5 @@ jobs:
               tes
 
       - name: Build docs
-        run: mkdocs build
+        run: mkdocs build && mkdocs gh-deploy --force
+
