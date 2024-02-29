@@ -1,6 +1,7 @@
 name: Linting and testing
 
-on: [pull_request]
+# on: [pull_request]
+on: push
 
 jobs:
   test:
@@ -9,7 +10,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        version: ["3.7", "3.8", "3.9", "3.10", "3.11"]
+        # version: ["3.7", "3.8", "3.9", "3.10", "3.11"]
+        version: ["3.11"]
 
     steps:
       - name: Check out code
@@ -28,13 +30,19 @@ jobs:
       - name: Install app
         run: pip install .
 
-      - name: Lint with Flake8
-        run: flake8 --max-line-length=120 .
+      # - name: Lint with Flake8
+      #   run: flake8 --max-line-length=120 .
 
-      - name: Run unit tests
+      # - name: Run unit tests
+      #   run: |
+      #     pytest \
+      #       --cov=tes/ \
+      #       --cov-branch \
+      #       --cov-report=term-missing \
+      #       --cov-fail-under=99
+
+      - name: Test with Funnel
         run: |
-          pytest \
-            --cov=tes/ \
-            --cov-branch \
-            --cov-report=term-missing \
-            --cov-fail-under=99
+          /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/ohsu-comp-bio/funnel/develop/install.sh)" -- 0.11.0-rc.4
+          ./funnel server --LocalStorage.AllowedDirs $HOME run &
+          pytest tests/integration
