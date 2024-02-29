@@ -224,6 +224,9 @@ class Executor(Base):
     command: List[str] = attrib(
         converter=strconv, validator=list_of(str)
     )
+    ignore_error: str = attrib(
+        default=None, converter=strconv, validator=optional(instance_of(bool))
+    )
     workdir: str = attrib(
         default=None, converter=strconv, validator=optional(instance_of(str))
     )
@@ -455,17 +458,69 @@ class ServiceInfoRequest(Base):
 
 
 @attrs
-class ServiceInfo(Base):
-    """TES `tesServiceInfo` `attrs` model class."""
-
+class Organization:
     name: Optional[str] = attrib(
         default=None, converter=strconv, validator=optional(instance_of(str))
     )
-    doc: Optional[str] = attrib(
+    url: Optional[str] = attrib(
         default=None, converter=strconv, validator=optional(instance_of(str))
     )
+
+
+@attrs
+class Type:
+    artifact: Optional[str] = attrib(
+        default=None, converter=strconv, validator=optional(instance_of(str))
+    )
+    group: Optional[str] = attrib(
+        default=None, converter=strconv, validator=optional(instance_of(str))
+    )
+    version: Optional[str] = attrib(
+        default=None, converter=strconv, validator=optional(instance_of(str))
+    )
+
+
+@attrs
+class ServiceInfo(Base):
+    """TES `tesServiceInfo` `attrs` model class."""
+    contact_url: Optional[str] = attrib(
+        default=None, converter=strconv, validator=optional(instance_of(str))
+    )
+    created_at: Optional[str] = attrib(
+        default=None, converter=strconv, validator=optional(instance_of(str))
+    )
+    description: Optional[str] = attrib(
+        default=None, converter=strconv, validator=optional(instance_of(str))
+    )
+    documentation_url: Optional[str] = attrib(
+        default=None, converter=strconv, validator=optional(instance_of(str))
+    )
+    environment: Optional[str] = attrib(
+        default=None, converter=strconv, validator=optional(instance_of(str))
+    )
+    id: Optional[str] = attrib(
+        default=None, converter=strconv, validator=optional(instance_of(str))
+    )
+    name: Optional[str] = attrib(
+        default=None, converter=strconv, validator=optional(instance_of(str))
+    )
+    organization: Optional[dict] = attrib(
+        default=None, validator=optional(instance_of(dict))
+    )
     storage: Optional[List[str]] = attrib(
-        default=None, converter=strconv, validator=optional(list_of(str))
+        default=None, converter=strconv, validator=optional(instance_of(list))
+    )
+    tes_resources_backend_parameters: Optional[List[str]] = attrib(
+        default=None, converter=strconv, validator=optional(instance_of(list))
+    )
+    type: Optional[dict] = attrib(
+        default=None, validator=optional(instance_of(dict))
+    )
+    updated_at: Optional[str] = attrib(
+        default=None, converter=strconv, validator=optional(instance_of(str))
+    )
+    version: Optional[str] = attrib(
+        default=None, converter=strconv, validator=optional(instance_of(str))
     )
 
 
