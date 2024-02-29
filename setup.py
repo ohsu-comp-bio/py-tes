@@ -36,7 +36,7 @@ setup(
     maintainer_email="kellrott@gmail.com",
     url="https://github.com/ohsu-comp-bio/py-tes",
     license="MIT",
-    packages=find_packages(),
+    packages=find_packages(exclude=["tests*"]),
     python_requires=">=3.7, <4",
     install_requires=read("requirements.txt").splitlines(),
     zip_safe=True,
