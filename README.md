@@ -1,4 +1,4 @@
-# py-tes {#manual-main}
+# py-tes
 
 [![GitHub Actions Test Status](https://img.shields.io/github/actions/workflow/status/ohsu-comp-bio/py-tes/tests.yml?logo=github)](https://github.com/ohsu-comp-bio/py-tes/actions) [![image](https://coveralls.io/repos/github/ohsu-comp-bio/py-tes/badge.svg?branch=master)](https://coveralls.io/github/ohsu-comp-bio/py-tes?branch=master) [![image](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
@@ -148,42 +148,14 @@ Output:
 True
 ```
 
-## Support {#main-support}
+## Resources
 
--   For releases, see `Changelog <changelog>`{.interpreted-text
-    role="ref"}.
--   Check
-    `frequently asked questions (FAQ) <project_info-faq>`{.interpreted-text
-    role="ref"}.
--   For **bugs and feature requests**, please use the [issue
-    tracker](https://github.com/ohsu-comp-bio/tes/issues).
--   For **contributions**, visit py-tes on
-    [Github](https://github.com/ohsu-comp-bio/py-tes)
+- [ga4gh-tes](https://github.com/microsoft/ga4gh-tes) : C# implementation of the GA4GH TES API; provides distributed batch task execution on Microsoft Azure
 
-## Resources {#main-resources}
+- [cwl-tes](https://github.com/ohsu-comp-bio/cwl-tes) : cwl-tes submits your tasks to a TES server. Task submission is parallelized when possible.
 
-[ga4gh-tes](https://github.com/microsoft/ga4gh-tes)
+- [Funnel](https://ohsu-comp-bio.github.io/funnel/): Funnel is a toolkit for distributed task execution with a simple API.
 
-:   C# implementation of the GA4GH TES API; provides distributed batch
-    task execution on Microsoft Azure
+- [Snakemake](https://snakemake.github.io/) : The Snakemape workflow management system is a tool to create reproducible and scalable data analyses
 
-[cwl-tes](https://github.com/ohsu-comp-bio/cwl-tes)
-
-:   cwl-tes submits your tasks to a TES server. Task submission is
-    parallelized when possible.
-
-[Funnel](https://ohsu-comp-bio.github.io/funnel/)
-
-:   Funnel is a toolkit for distributed task execution with a simple
-    API.
-
-[Snakemake](https://snakemake.github.io/)
-
-:   The Snakemape workflow management system is a tool to create
-    reproducible and scalable data analyses
-
-[Nextflow](https://www.nextflow.io/)
-
-:   Nextflow enables scalable and reproducible scientific workflows
-    using software containers. It allows the adaptation of pipelines
-    written in the most common scripting languages.
+- [Nextflow](https://www.nextflow.io/): Nextflow enables scalable and reproducible scientific workflows using software containers. It allows the adaptation of pipelines written in the most common scripting languages.
