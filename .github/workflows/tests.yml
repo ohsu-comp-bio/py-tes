@@ -41,6 +41,6 @@ jobs:
 
       - name: Test with Funnel
         run: |
-          /bin/bash -c "$(curl -fsSL https://github.com/ohsu-comp-bio/funnel/releases/download/0.11.0/install.sh)" -- 0.11.0
+          /bin/bash -c "$(curl -fsSL https://github.com/ohsu-comp-bio/funnel/releases/download/0.11.0-rc.5/install.sh)" -- 0.11.0-rc.5
           funnel server --LocalStorage.AllowedDirs $HOME run &
           pytest tests/integration
