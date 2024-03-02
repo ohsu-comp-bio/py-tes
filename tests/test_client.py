@@ -205,6 +205,19 @@ class TestHTTPClient(unittest.TestCase):
                 ]
             )
             self.cli.wait(self.mock_id, timeout=2)
+    
+    def test_wait_no_state_change(self):
+        with requests_mock.Mocker() as m:
+            m.get(
+                "%s/ga4gh/tes/v1/tasks/%s" % (self.mock_url, self.mock_id),
+                [
+                    {"status_code": 200, "json": {"id": self.mock_id, "state": "RUNNING"}},
+                    {"status_code": 200, "json": {"id": self.mock_id, "state": "RUNNING"}},
+                    # Continues to return RUNNING state
+                ]
+            )
+            with self.assertRaises(TimeoutError):
+                self.cli.wait(self.mock_id, timeout=2)
 
     def test_request_params(self):
 
