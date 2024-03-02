@@ -1,0 +1,36 @@
+name: Building & publishing docs
+
+on:
+  push:
+    branches: [master,api-docs]
+
+jobs:
+  docs:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+
+      - name: Install requirements
+        run: pip install -r docs/requirements.txt
+
+      - name: Install app
+        run: pip install .
+
+      - name: Create markdown documents
+        run: |
+          lazydocs \
+              --output-path="./docs/docstrings" \
+              --overview-file="README.md" \
+              --src-base-url="https://github.com/ohsu-comp-bio/py-tes/blob/master/" \
+              --validate \
+              tes
+
+      - name: Build docs
+        run: mkdocs build

@@ -5,7 +5,23 @@ import json
 import unittest
 
 from tes.utils import camel_to_snake, unmarshal, UnmarshalError
-from tes.models import Input, Task, CreateTaskResponse
+from tes.models import (
+    CancelTaskRequest,
+    CancelTaskResponse,
+    CreateTaskResponse,
+    Executor,
+    ExecutorLog,
+    GetTaskRequest,
+    Input,
+    ListTasksRequest,
+    ListTasksResponse,
+    Output,
+    OutputFileLog,
+    Resources,
+    ServiceInfo,
+    Task,
+    TaskLog,
+)
 
 
 class TestUtils(unittest.TestCase):
@@ -19,7 +35,110 @@ class TestUtils(unittest.TestCase):
         self.assertEqual(camel_to_snake(case3), "foo_bar")
 
     def test_unmarshal(self):
-        test_invalid_dict = {"adfasd": "bar"}
+
+        # test unmarshalling with no or minimal contents
+        try:
+            unmarshal(
+                CancelTaskRequest(id="foo").as_json(),
+                CancelTaskRequest
+            )
+        except Exception:
+            self.fail("Raised ExceptionType unexpectedly!")
+
+        try:
+            unmarshal(CancelTaskResponse().as_json(), CancelTaskResponse)
+        except Exception:
+            self.fail("Raised ExceptionType unexpectedly!")
+
+        try:
+            unmarshal(
+                CreateTaskResponse(id="foo").as_json(),
+                CreateTaskResponse
+            )
+        except Exception:
+            self.fail("Raised ExceptionType unexpectedly!")
+
+        try:
+            unmarshal(Executor(
+                image="alpine", command=["echo", "hello"]).as_json(),
+                Executor
+            )
+        except Exception:
+            self.fail("Raised ExceptionType unexpectedly!")
+
+        try:
+            unmarshal(ExecutorLog().as_json(), ExecutorLog)
+        except Exception:
+            self.fail("Raised ExceptionType unexpectedly!")
+
+        try:
+            unmarshal(
+                GetTaskRequest(id="foo", view="BASIC").as_json(),
+                GetTaskRequest
+            )
+        except Exception:
+            self.fail("Raised ExceptionType unexpectedly!")
+
+        try:
+            unmarshal(Input().as_json(), Input)
+        except Exception:
+            self.fail("Raised ExceptionType unexpectedly!")
+
+        try:
+            unmarshal(ListTasksRequest().as_json(), ListTasksRequest)
+        except Exception:
+            self.fail("Raised ExceptionType unexpectedly!")
+
+        try:
+            unmarshal(ListTasksResponse().as_json(), ListTasksResponse)
+        except Exception:
+            self.fail("Raised ExceptionType unexpectedly!")
+
+        try:
+            unmarshal(Output().as_json(), Output)
+        except Exception:
+            self.fail("Raised ExceptionType unexpectedly!")
+
+        try:
+            unmarshal(OutputFileLog().as_json(), OutputFileLog)
+        except Exception:
+            self.fail("Raised ExceptionType unexpectedly!")
+
+        try:
+            unmarshal(Resources().as_json(), Resources)
+        except Exception:
+            self.fail("Raised ExceptionType unexpectedly!")
+
+        try:
+            unmarshal(ServiceInfo().as_json(), ServiceInfo)
+        except Exception:
+            self.fail("Raised ExceptionType unexpectedly!")
+
+        try:
+            unmarshal(Task().as_json(), Task)
+        except Exception:
+            self.fail("Raised ExceptionType unexpectedly!")
+
+        try:
+            unmarshal(TaskLog().as_json(), TaskLog)
+        except Exception:
+            self.fail("Raised ExceptionType unexpectedly!")
+
+        # test special cases
+        self.assertIsNone(unmarshal(None, Input))
+        with self.assertRaises(TypeError):
+            unmarshal([], Input)
+        with self.assertRaises(TypeError):
+            unmarshal(1, Input)
+        with self.assertRaises(TypeError):
+            unmarshal(1.3, Input)
+        with self.assertRaises(TypeError):
+            unmarshal(True, Input)
+        with self.assertRaises(TypeError):
+            unmarshal('foo', Input)
+
+        # test with some interesting contents
+        test_invalid_dict = {"foo": "bar"}
         test_invalid_str = json.dumps(test_invalid_dict)
         with self.assertRaises(UnmarshalError):
             unmarshal(test_invalid_dict, CreateTaskResponse)
@@ -33,7 +152,7 @@ class TestUtils(unittest.TestCase):
         }
         test_simple_str = json.dumps(test_simple_dict)
         o1 = unmarshal(test_simple_dict, Input)
-        o2 = unmarshal(test_simple_str, Input)
+        o2 = unmarshal(test_simple_str, Input, convert_camel_case=False)
         self.assertTrue(isinstance(o1, Input))
         self.assertTrue(isinstance(o2, Input))
         self.assertEqual(o1, o2)
@@ -92,6 +211,13 @@ class TestUtils(unittest.TestCase):
                     ]
                 }
             ],
+            "resources": {
+                "cpu_cores": 1,
+                "ram_gb": 2,
+                "disk_gb": 3,
+                "preemptible": True,
+                "zones": ["us-east-1", "us-west-1"]
+            },
             "creation_time": "2017-10-09T17:00:00.0Z"
         }
 
@@ -100,7 +226,7 @@ class TestUtils(unittest.TestCase):
         o2 = unmarshal(test_complex_str, Task)
         self.assertTrue(isinstance(o1, Task))
         self.assertTrue(isinstance(o2, Task))
-        self.assertEqual(o1, o2)
+        self.assertAlmostEqual(o1, o2)
         expected = test_complex_dict.copy()
 
         # handle expected conversions
@@ -122,7 +248,6 @@ class TestUtils(unittest.TestCase):
         expected["creation_time"] = dateutil.parser.parse(
             expected["creation_time"]
         )
-
         self.assertEqual(o1.as_dict(), expected)
 
     def test_unmarshal_types(self):
