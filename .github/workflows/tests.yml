@@ -37,9 +37,10 @@ jobs:
             --cov=tes/ \
             --cov-branch \
             --cov-report=term-missing \
-            --cov-fail-under=99
+            --cov-fail-under=99 \
+            --ignore=tests/integration
 
-      - name: Test with Funnel
+      - name: Run integration tests
         run: |
           /bin/bash -c "$(curl -fsSL https://github.com/ohsu-comp-bio/funnel/releases/download/0.11.0-rc.5/install.sh)" -- 0.11.0-rc.5
           funnel server --LocalStorage.AllowedDirs $HOME run &
