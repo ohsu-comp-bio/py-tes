@@ -1,7 +1,6 @@
 name: Linting and testing
 
-# on: [pull_request]
-on: push
+on: [pull_request]
 
 jobs:
   test:
@@ -10,8 +9,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        # version: ["3.7", "3.8", "3.9", "3.10", "3.11"]
-        version: ["3.11"]
+        version: ["3.7", "3.8", "3.9", "3.10", "3.11"]
 
     steps:
       - name: Check out code
@@ -30,16 +28,16 @@ jobs:
       - name: Install app
         run: pip install .
 
-      # - name: Lint with Flake8
-      #   run: flake8 --max-line-length=120 .
+      - name: Lint with Flake8
+        run: flake8 --max-line-length=120 .
 
-      # - name: Run unit tests
-      #   run: |
-      #     pytest \
-      #       --cov=tes/ \
-      #       --cov-branch \
-      #       --cov-report=term-missing \
-      #       --cov-fail-under=99
+      - name: Run unit tests
+        run: |
+          pytest \
+            --cov=tes/ \
+            --cov-branch \
+            --cov-report=term-missing \
+            --cov-fail-under=99
 
       - name: Test with Funnel
         run: |
