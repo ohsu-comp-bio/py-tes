@@ -205,7 +205,7 @@ class TestHTTPClient(unittest.TestCase):
                 ]
             )
             self.cli.wait(self.mock_id, timeout=2)
-    
+
     def test_wait_no_state_change(self):
         with requests_mock.Mocker() as m:
             m.get(
