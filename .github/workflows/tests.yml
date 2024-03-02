@@ -41,6 +41,9 @@ jobs:
       #       --cov-report=term-missing \
       #       --cov-fail-under=99
 
+      - name: Setup tmate session
+        uses: mxschmitt/action-tmate@v3
+
       - name: Test with Funnel
         run: |
           /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/ohsu-comp-bio/funnel/develop/install.sh)" -- 0.11.0-rc.4
