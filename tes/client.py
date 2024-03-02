@@ -241,7 +241,7 @@ class HTTPClient(object):
             try:
                 response = self.get_task(task_id, "MINIMAL")
             except Exception:
-                pass
+                raise Exception(f"Failed to get task {task_id}")
 
             if response is not None:
                 if check_success(response):
