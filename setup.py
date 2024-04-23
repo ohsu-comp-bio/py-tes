@@ -40,7 +40,6 @@ setup(
     python_requires=">=2.7, <4",
     install_requires=[
         "attrs>=17.4.0",
-        "future>=0.16.0",
         "python-dateutil>=2.6.1",
         "requests>=2.18.1"
     ],
