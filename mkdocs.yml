@@ -1,0 +1,15 @@
+site_name: py-tes documentation
+site_url: https://ohsu-comp-bio.github.io/py-tes
+site_author: Kyle Ellrott <kellrott@gmail.com>
+
+repo_name: py-tes
+repo_url: https://github.com/ohsu-comp-bio/py-tes
+edit_uri: edit/master/docs
+docs_dir: docs
+
+theme:
+  name: material
+
+plugins:
+  - awesome-pages
+  - search

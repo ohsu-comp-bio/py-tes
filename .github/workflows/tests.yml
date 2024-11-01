@@ -1,26 +1,47 @@
-name: py-test_file
+name: Linting and testing
 
-on: [ pull_request ]
+on: [pull_request]
 
 jobs:
-
   test:
     runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        version: ["3.7", "3.8", "3.9", "3.10", "3.11", "3.12"]
+
     steps:
-    - name: Check out code
-      uses: actions/checkout@v2
+      - name: Check out code
+        uses: actions/checkout@v3
 
-    - name: Requirements
-      run: pip install -r requirements.txt
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.version }}
 
-    - name: Test Requirements
-      run: pip install -r tests/requirements.txt
+      - name: Install requirements
+        run: |
+          pip install -r requirements.txt
+          pip install -r tests/requirements.txt
 
-    - name: Install
-      run: python setup.py install --user
+      - name: Install app
+        run: pip install .
 
-    - name: Flake
-      run: flake8 .
+      - name: Lint with Flake8
+        run: flake8 --max-line-length=120 .
 
-    - name: Test
-      run: python -m nose tests --with-coverage --cover-package tes --cover-min-percentage 80
+      - name: Run unit tests
+        run: |
+          pytest \
+            --cov=tes/ \
+            --cov-branch \
+            --cov-report=term-missing \
+            --cov-fail-under=99 \
+            --ignore=tests/integration
+
+      - name: Run integration tests
+        run: |
+          /bin/bash -c "$(curl -fsSL https://github.com/ohsu-comp-bio/funnel/releases/download/0.11.0-rc.5/install.sh)" -- 0.11.0-rc.5
+          funnel server --LocalStorage.AllowedDirs $HOME run &
+          pytest tests/integration
