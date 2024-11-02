@@ -1,4 +1,4 @@
-# py-tes
+# py-tes 🐍
 
 [![GitHub Actions Test Status](https://img.shields.io/github/actions/workflow/status/ohsu-comp-bio/py-tes/tests.yml?logo=github)](https://github.com/ohsu-comp-bio/py-tes/actions) [![image](https://coveralls.io/repos/github/ohsu-comp-bio/py-tes/badge.svg?branch=master)](https://coveralls.io/github/ohsu-comp-bio/py-tes?branch=master) [![image](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
@@ -6,13 +6,14 @@
 [GA4GH Task Execution
 Schema](https://github.com/ga4gh/task-execution-schemas).
 
-## Install
+## Install ⚡
 
 Available on [PyPI](https://pypi.org/project/py-tes/).
 
     pip install py-tes
 
-## Example
+## Example ✍️
+
 
 ``` python
 import tes
@@ -148,7 +149,7 @@ Output:
 True
 ```
 
-## Resources
+## Additional Resources 📚
 
 - [ga4gh-tes](https://github.com/microsoft/ga4gh-tes) : C# implementation of the GA4GH TES API; provides distributed batch task execution on Microsoft Azure
 
@@ -159,3 +160,7 @@ True
 - [Snakemake](https://snakemake.github.io/) : The Snakemape workflow management system is a tool to create reproducible and scalable data analyses
 
 - [Nextflow](https://www.nextflow.io/): Nextflow enables scalable and reproducible scientific workflows using software containers. It allows the adaptation of pipelines written in the most common scripting languages.
+
+- [GA4GH TES](https://www.ga4gh.org/product/task-execution-service-tes/): Main page for the Task Execution Schema — a standardized schema and API for describing batch execution tasks. 
+
+- [TES GitHub](https://github.com/ga4gh/task-execution-schemas): Source repo for the Task Execution Schema 
