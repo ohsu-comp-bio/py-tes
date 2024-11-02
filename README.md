@@ -164,3 +164,5 @@ True
 - [GA4GH TES](https://www.ga4gh.org/product/task-execution-service-tes/): Main page for the Task Execution Schema — a standardized schema and API for describing batch execution tasks. 
 
 - [TES GitHub](https://github.com/ga4gh/task-execution-schemas): Source repo for the Task Execution Schema 
+
+- [Awesome TES](https://github.com/ohsu-comp-bio/awesome-tes): A curated list of awesome GA4GH TES projects and programs 
