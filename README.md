@@ -29,7 +29,7 @@ task = tes.Task(
 )
 
 # create client
-cli = tes.HTTPClient("https://funnel.example.com", timeout=5)
+cli = tes.HTTPClient("https://tes.example.com", timeout=5)
 
 # access endpoints
 service_info = cli.get_service_info()
