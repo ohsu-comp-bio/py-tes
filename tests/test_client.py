@@ -3,7 +3,9 @@ import requests
 import requests_mock
 import uuid
 
-from tes.client import append_suffixes_to_url, HTTPClient, send_request
+import pytest
+
+from tes.client import HTTPClient
 from tes.models import Task, Executor
 from tes.utils import TimeoutError
 
