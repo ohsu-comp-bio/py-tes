@@ -39,6 +39,7 @@ setup(
     packages=find_packages(exclude=["tests*"]),
     python_requires=">=3.7, <4",
     install_requires=read("requirements.txt").splitlines(),
+    tests_require=read("tests/requirements.txt").splitlines(),
     zip_safe=True,
     classifiers=[
         "Development Status :: 4 - Beta",
@@ -49,8 +50,8 @@ setup(
         "Programming Language :: Python :: 3",
         "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
-        "Programming Language :: Python :: 3.9"
-        "Programming Language :: Python :: 3.10"
+        "Programming Language :: Python :: 3.9",
+        "Programming Language :: Python :: 3.10",
         "Programming Language :: Python :: 3.11"
     ],
 )
