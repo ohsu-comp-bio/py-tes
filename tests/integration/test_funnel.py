@@ -9,14 +9,7 @@ def tes_client():
 
 @pytest.fixture
 def task():
-    return tes.Task(
-        executors=[
-            tes.Executor(
-                image="alpine",
-                command=["echo", "hello"]
-            )
-        ]
-    )
+    return tes.Task(executors=[tes.Executor(image="alpine", command=["echo", "hello"])])
 
 
 def test_service_info(tes_client):
@@ -39,7 +32,16 @@ def test_task_status(tes_client, task):
     assert task_id is not None
 
     status = tes_client.get_task(task_id, view="MINIMAL").state
-    assert status in ["QUEUED", "INITIALIZING", "RUNNING", "COMPLETE", "CANCELED", "EXECUTOR_ERROR", "SYSTEM_ERROR", "UNKNOWN"]
+    assert status in [
+        "QUEUED",
+        "INITIALIZING",
+        "RUNNING",
+        "COMPLETE",
+        "CANCELED",
+        "EXECUTOR_ERROR",
+        "SYSTEM_ERROR",
+        "UNKNOWN",
+    ]
 
 
 def test_task_logs(tes_client, task):

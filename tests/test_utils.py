@@ -45,7 +45,9 @@ def test_unmarshal():
         pytest.fail("Raised ExceptionType unexpectedly!")
 
     try:
-        unmarshal(Executor(image="alpine", command=["echo", "hello"]).as_json(), Executor)
+        unmarshal(
+            Executor(image="alpine", command=["echo", "hello"]).as_json(), Executor
+        )
     except Exception:
         pytest.fail("Raised ExceptionType unexpectedly!")
 
@@ -114,8 +116,8 @@ def test_unmarshal():
         unmarshal(1.3, Input)
     with pytest.raises(TypeError):
         unmarshal(True, Input)
-    with pytest.raises(TypeError):
-        unmarshal('foo', Input)
+    with pytest.raises(UnmarshalError):
+        unmarshal("foo", Input)
 
     # test with some interesting contents
     test_invalid_dict = {"foo": "bar"}
@@ -128,7 +130,7 @@ def test_unmarshal():
     test_simple_dict = {
         "url": "file://test_file",
         "path": "/mnt/test_file",
-        "type": "FILE"
+        "type": "FILE",
     }
     test_simple_str = json.dumps(test_simple_dict)
     o1 = unmarshal(test_simple_dict, Input)
@@ -145,22 +147,18 @@ def test_unmarshal():
             {
                 "url": "file:///storage/inputs/test_file",
                 "path": "/mnt/test_file",
-                "type": "FILE"
+                "type": "FILE",
             }
         ],
         "outputs": [
             {
                 "url": "file:///storage/outputs/test_outputfile",
                 "path": "/mnt/test_outputfile",
-                "type": "FILE"
+                "type": "FILE",
             }
         ],
         "executors": [
-            {
-                "image": "alpine",
-                "command": ["echo", "hello"],
-                "env": {"HOME": "/home/"}
-            }
+            {"image": "alpine", "command": ["echo", "hello"], "env": {"HOME": "/home/"}}
         ],
         "logs": [
             {
@@ -180,7 +178,7 @@ def test_unmarshal():
                     {
                         "url": "file:///storage/outputs/test_outputfile",
                         "path": "/mnt/test_outputfile",
-                        "size_bytes": "3333"
+                        "size_bytes": "3333",
                     }
                 ],
                 "system_logs": [
@@ -188,7 +186,7 @@ def test_unmarshal():
                     timestamp='2018-05-04T09:12:42.391262682-07:00' \
                     task_attempt='0' executor_index='0' \
                     url='swift://biostream/protograph'"
-                ]
+                ],
             }
         ],
         "resources": {
@@ -196,9 +194,9 @@ def test_unmarshal():
             "ram_gb": 2,
             "disk_gb": 3,
             "preemptible": True,
-            "zones": ["us-east-1", "us-west-1"]
+            "zones": ["us-east-1", "us-west-1"],
         },
-        "creation_time": "2017-10-09T17:00:00.0Z"
+        "creation_time": "2017-10-09T17:00:00.0Z",
     }
 
     test_complex_str = json.dumps(test_complex_dict)
@@ -225,32 +223,30 @@ def test_unmarshal():
     expected["logs"][0]["logs"][0]["end_time"] = dateutil.parser.parse(
         expected["logs"][0]["logs"][0]["end_time"]
     )
-    expected["creation_time"] = dateutil.parser.parse(
-        expected["creation_time"]
-    )
+    expected["creation_time"] = dateutil.parser.parse(expected["creation_time"])
     assert o1.as_dict() == expected
 
 
 def test_unmarshal_types():
     empty_log_dict = {
-        'id': 'c55qjplpsjir0oo1kdj0',
-        'state': 'QUEUED',
-        'name': 'toil-bbc72af7-e11a-4831-9392-669ea6c309a1-0',
-        'executors': [{
-            'image': 'testImage',
-            'command': [
-                '_toil_kubernetes_executor',
-                'gAWVGwAAAAAAAAB9lIwHY29tbWFuZJSMCnNsZWVwIDEwMDCUcy4='
-            ]
-        }],
-        'logs': [{}],
-        'creation_time': "2017-10-09T17:00:00"
+        "id": "c55qjplpsjir0oo1kdj0",
+        "state": "QUEUED",
+        "name": "toil-bbc72af7-e11a-4831-9392-669ea6c309a1-0",
+        "executors": [
+            {
+                "image": "testImage",
+                "command": [
+                    "_toil_kubernetes_executor",
+                    "gAWVGwAAAAAAAAB9lIwHY29tbWFuZJSMCnNsZWVwIDEwMDCUcy4=",
+                ],
+            }
+        ],
+        "logs": [{}],
+        "creation_time": "2017-10-09T17:00:00",
     }
 
     expected = empty_log_dict.copy()
-    expected["creation_time"] = dateutil.parser.parse(
-        expected["creation_time"]
-    )
+    expected["creation_time"] = dateutil.parser.parse(expected["creation_time"])
 
     empty_log_str = json.dumps(empty_log_dict)
     o1 = unmarshal(empty_log_dict, Task)
@@ -261,21 +257,13 @@ def test_unmarshal_types():
 
 def test_unmarshal_additional_cases():
     # Additional test cases for more coverage
-    test_dict_with_extra_fields = {
-        "id": "foo",
-        "extra_field": "extra_value"
-    }
+    test_dict_with_extra_fields = {"id": "foo", "extra_field": "extra_value"}
     with pytest.raises(UnmarshalError):
         unmarshal(test_dict_with_extra_fields, CancelTaskRequest)
 
     test_dict_with_nested_objects = {
         "id": "foo",
-        "executors": [
-            {
-                "image": "alpine",
-                "command": ["echo", "hello"]
-            }
-        ]
+        "executors": [{"image": "alpine", "command": ["echo", "hello"]}],
     }
     result = unmarshal(test_dict_with_nested_objects, Task)
     assert isinstance(result, Task)
