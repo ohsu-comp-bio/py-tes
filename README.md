@@ -21,12 +21,11 @@ Schema](https://github.com/ga4gh/task-execution-schemas).
 
 | TES version | py-tes version | Example Notebook (*Coming soon!*)             |
 |-------------|----------------|-----------------------------------------------|
-| 1.1.0       | 1.1.0          | [![Open in Colab][colab-badge]][colab]        |
+| 1.1.0       | 1.1.0          | [![Open in Colab][colab-badge]][colab-v1.1.0] |
 | 1.0.0       | 1.0.0          | [![Open in Colab][colab-badge]][colab-v1.0.0] |
 
-
 [colab-badge]: https://colab.research.google.com/assets/colab-badge.svg
-[colab]: https://colab.research.google.com/github/ohsu-comp-bio/py-tes/blob/develop/examples/v1_1_0.ipynb
+[colab-v1.1.0]: https://colab.research.google.com/github/ohsu-comp-bio/py-tes/blob/develop/examples/v1_1_0.ipynb
 [colab-v1.0.0]: https://colab.research.google.com/github/ohsu-comp-bio/py-tes/blob/develop/examples/v1_0_0.ipynb
 
 # Installation 🌀
