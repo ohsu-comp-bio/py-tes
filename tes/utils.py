@@ -56,7 +56,7 @@ def unmarshal(j: Any, o: Type, convert_camel_case=True) -> Any:
         try:
             m = json.loads(j)
         except json.decoder.JSONDecodeError:
-            pass
+            raise UnmarshalError("Unable to decode JSON string: %s" % j)
     elif j is None:
         return None
     else:

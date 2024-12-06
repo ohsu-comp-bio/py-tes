@@ -74,7 +74,7 @@ def strconv(value: Any) -> Any:
     """
     if isinstance(value, (tuple, list)):
         if all([isinstance(n, str) for n in value]):
-            return [str(n) for n in value]
+            return type(value)(str(n) for n in value)
         else:
             return value
     elif isinstance(value, str):
@@ -109,6 +109,8 @@ def timestampconv(value: Optional[str]) -> Optional[datetime]:
         Converted value.
     """
     if value is None:
+        return value
+    if isinstance(value, datetime):
         return value
     return dateutil.parser.parse(value)
 

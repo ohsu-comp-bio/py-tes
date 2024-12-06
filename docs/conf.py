@@ -16,14 +16,12 @@
 import sys
 import os
 from sphinxawesome_theme.postprocess import Icons
-
+import tes
 
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 sys.path.insert(0, os.path.abspath("../"))
-
-import tes
 
 # -- General configuration ------------------------------------------------
 
@@ -127,8 +125,8 @@ html_theme_options = {
     "logo_light": "logo-ga4gh-light.png",
     "logo_dark": "logo-ga4gh-dark.png",
     "main_nav_links": {
-        "About": "index",
-        "API": "api/tes",
+        "About": "https://github.com/ohsu-comp-bio/py-tes",
+        "Docs": "https://github.com/ohsu-comp-bio/py-tes",
         "GitHub": "https://github.com/ohsu-comp-bio/py-tes",
     },
     "awesome_external_links": True,
