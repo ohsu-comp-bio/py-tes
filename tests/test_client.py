@@ -3,8 +3,6 @@ import requests
 import requests_mock
 import uuid
 
-import pytest
-
 from tes.client import append_suffixes_to_url, HTTPClient, send_request
 from tes.models import Task, Executor
 from tes.utils import TimeoutError
