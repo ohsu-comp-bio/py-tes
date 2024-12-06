@@ -27,7 +27,7 @@ _py-tes_ is a library for interacting with servers implementing the [GA4GH Task 
 | [1.0][tes-v1.1] | [1.0.0][py-tes-v1.0.0] | [![Open in Colab][colab-badge]][colab-v1.0.0] |
 
 [tes-v1.1]: https://github.com/ga4gh/task-execution-schemas/releases/tag/v1.1
-[tes-v1.0]: https://github.com/ga4gh/task-execution-schemas/releases/tag/v1.1
+[tes-v1.0]: https://github.com/ga4gh/task-execution-schemas/releases/tag/v1.0
 
 [py-tes-v1.1.0]: https://github.com/ohsu-comp-bio/py-tes/releases/tag/1.1.0
 [py-tes-v1.0.0]: https://github.com/ohsu-comp-bio/py-tes/releases/tag/1.0.0
