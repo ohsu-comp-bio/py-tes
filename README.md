@@ -1,24 +1,58 @@
 # py-tes 🐍
 
-[![GitHub Actions Test Status](https://img.shields.io/github/actions/workflow/status/ohsu-comp-bio/py-tes/tests.yml?logo=github)](https://github.com/ohsu-comp-bio/py-tes/actions) [![image](https://coveralls.io/repos/github/ohsu-comp-bio/py-tes/badge.svg?branch=master)](https://coveralls.io/github/ohsu-comp-bio/py-tes?branch=master) [![image](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Build Status][build-badge]][build]
 
-*py-tes* is a library for interacting with servers implementing the
-[GA4GH Task Execution
-Schema](https://github.com/ga4gh/task-execution-schemas).
+[![Test Coverage][coverage-badge]][coverage]
 
-## Install ⚡
+[![License][license-badge]][license]
 
-Available on [PyPI](https://pypi.org/project/py-tes/).
+[![PyPI][pypi-badge]][pypi]
 
-    pip install py-tes
+[build-badge]: https://img.shields.io/github/actions/workflow/status/ohsu-comp-bio/py-tes/tests.yml?logo=github
+[build]: https://github.com/ohsu-comp-bio/py-tes/actions
+[coverage-badge]: https://coveralls.io/repos/github/ohsu-comp-bio/py-tes/badge.svg?branch=master
+[coverage]: https://coveralls.io/github/ohsu-comp-bio/py-tes?branch=master
+[license-badge]: https://img.shields.io/badge/License-MIT-yellow.svg
+[license]: https://opensource.org/licenses/MIT
+[pypi-badge]: https://img.shields.io/pypi/v/py-tes
+[pypi]: https://pypi.org/project/py-tes/
 
-## Example ✍️
+_py-tes_ is a library for interacting with servers implementing the [GA4GH Task Execution Schema](https://github.com/ga4gh/task-execution-schemas).
 
+# Quick Start ⚡
 
-``` python
+| TES version     | py-tes version         | Example Notebook (_Coming soon!_)             |
+|-----------------|------------------------|-----------------------------------------------|
+| [1.1][tes-v1.1] | [1.1.0][py-tes-v1.1.0] | [![Open in Colab][colab-badge]][colab-v1.1.0] |
+| [1.0][tes-v1.1] | [1.0.0][py-tes-v1.0.0] | [![Open in Colab][colab-badge]][colab-v1.0.0] |
+
+[tes-v1.1]: https://github.com/ga4gh/task-execution-schemas/releases/tag/v1.1
+[tes-v1.0]: https://github.com/ga4gh/task-execution-schemas/releases/tag/v1.1
+
+[py-tes-v1.1.0]: https://github.com/ohsu-comp-bio/py-tes/releases/tag/1.1.0
+[py-tes-v1.0.0]: https://github.com/ohsu-comp-bio/py-tes/releases/tag/1.0.0
+
+[colab-badge]: https://colab.research.google.com/assets/colab-badge.svg
+[colab-v1.1.0]: https://colab.research.google.com/github/ohsu-comp-bio/py-tes/blob/develop/examples/v1_1_0.ipynb
+[colab-v1.0.0]: https://colab.research.google.com/github/ohsu-comp-bio/py-tes/blob/develop/examples/v1_0_0.ipynb
+
+# Installation 🌀
+
+Install `py-tes` from [PyPI](https://pypi.org/project/py-tes/) and run it in your script:
+
+```sh
+➜ pip install py-tes
+
+➜ python example.py
+```
+
+## example.py 🐍
+
+```py
 import tes
+import json
 
-# define task
+# Define task
 task = tes.Task(
     executors=[
         tes.Executor(
@@ -28,89 +62,90 @@ task = tes.Task(
     ]
 )
 
-# create client
-cli = tes.HTTPClient("https://tes.example.com", timeout=5)
+# Create client
+cli = tes.HTTPClient("http://localhost:8000", timeout=5)
 
-# access endpoints
-service_info = cli.get_service_info()
+# Create and run task
 task_id = cli.create_task(task)
+cli.wait(task_id, timeout=5)
+
+# Fetch task info
 task_info = cli.get_task(task_id, view="BASIC")
-cli.cancel_task(task_id)
-tasks_list = cli.list_tasks(view="MINIMAL")  # default view
+j = json.loads(task_info.as_json())
+
+# Pretty print task info
+print(json.dumps(j, indent=2))
 ```
 
-## How to...
+# How to...
 
 > Makes use of the objects above...
 
-### ...export a model to a dictionary
+## ...export a model to a dictionary
 
-``` python
+```python
 task_dict = task.as_dict(drop_empty=False)
 ```
 
 `task_dict` contents:
 
-``` console
+```console
 {'id': None, 'state': None, 'name': None, 'description': None, 'inputs': None, 'outputs': None, 'resources': None, 'executors': [{'image': 'alpine', 'command': ['echo', 'hello'], 'workdir': None, 'stdin': None, 'stdout': None, 'stderr': None, 'env': None}], 'volumes': None, 'tags': None, 'logs': None, 'creation_time': None}
 ```
 
-### ...export a model to JSON
+## ...export a model to JSON
 
-``` python
+```python
 task_json = task.as_json()  # also accepts `drop_empty` arg
 ```
 
 `task_json` contents:
 
-``` console
+```console
 {"executors": [{"image": "alpine", "command": ["echo", "hello"]}]}
 ```
 
-### ...pretty print a model
+## ...pretty print a model
 
-``` python
+```python
 print(task.as_json(indent=3))  # keyword args are passed to `json.dumps()`
 ```
 
 Output:
 
-``` json
+```json
 {
-   "executors": [
-      {
-         "image": "alpine",
-         "command": [
-            "echo",
-            "hello"
-         ]
-      }
-   ]
+  "executors": [
+    {
+      "image": "alpine",
+      "command": ["echo", "hello"]
+    }
+  ]
 }
 ```
 
-### ...access a specific task from the task list
+## ...access a specific task from the task list
 
-``` python
+```py
 specific_task = tasks_list.tasks[5]
 ```
 
 `specific_task` contents:
 
-``` console
+```sh
 Task(id='393K43', state='COMPLETE', name=None, description=None, inputs=None, outputs=None, resources=None, executors=None, volumes=None, tags=None, logs=None, creation_time=None)
 ```
 
-### ...iterate over task list items
+## ...iterate over task list items
 
-``` python
+```py
 for t in tasks_list[:3]:
     print(t.as_json(indent=3))
 ```
 
 Output:
 
-``` console
+```sh
 {
    "id": "task_A2GFS4",
    "state": "RUNNING"
@@ -125,31 +160,31 @@ Output:
 }
 ```
 
-### ...instantiate a model from a JSON representation
+## ...instantiate a model from a JSON representation
 
-``` python
+```py
 task_from_json = tes.client.unmarshal(task_json, tes.Task)
 ```
 
 `task_from_json` contents:
 
-``` console
+```sh
 Task(id=None, state=None, name=None, description=None, inputs=None, outputs=None, resources=None, executors=[Executor(image='alpine', command=['echo', 'hello'], workdir=None, stdin=None, stdout=None, stderr=None, env=None)], volumes=None, tags=None, logs=None, creation_time=None)
 ```
 
 Which is equivalent to `task`:
 
-``` python
+```py
 print(task_from_json == task)
 ```
 
 Output:
 
-``` console
+```sh
 True
 ```
 
-## Additional Resources 📚
+# Additional Resources 📚
 
 - [ga4gh-tes](https://github.com/microsoft/ga4gh-tes) : C# implementation of the GA4GH TES API; provides distributed batch task execution on Microsoft Azure
 
@@ -161,8 +196,8 @@ True
 
 - [Nextflow](https://www.nextflow.io/): Nextflow enables scalable and reproducible scientific workflows using software containers. It allows the adaptation of pipelines written in the most common scripting languages.
 
-- [GA4GH TES](https://www.ga4gh.org/product/task-execution-service-tes/): Main page for the Task Execution Schema — a standardized schema and API for describing batch execution tasks. 
+- [GA4GH TES](https://www.ga4gh.org/product/task-execution-service-tes/): Main page for the Task Execution Schema — a standardized schema and API for describing batch execution tasks.
 
-- [TES GitHub](https://github.com/ga4gh/task-execution-schemas): Source repo for the Task Execution Schema 
+- [TES GitHub](https://github.com/ga4gh/task-execution-schemas): Source repo for the Task Execution Schema
 
-- [Awesome TES](https://github.com/ohsu-comp-bio/awesome-tes): A curated list of awesome GA4GH TES projects and programs 
+- [Awesome TES](https://github.com/ohsu-comp-bio/awesome-tes): A curated list of awesome GA4GH TES projects and programs

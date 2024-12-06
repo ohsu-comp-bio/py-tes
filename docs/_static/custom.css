@@ -1,0 +1,83 @@
+.image-reference img {
+    display: inline;
+    background: none !important;
+}
+
+.image-reference {
+    border-bottom: none !important;
+}
+
+:root {
+    --color-links: #047857;
+    --color-brand: #047857;
+}
+
+#content {
+    overflow-x: auto;
+}
+
+.sticky.top-16 {
+    overflow: unset;
+  }
+
+/* Light theme styles (default) */
+body.dark-theme {
+    background-color: black !important;
+}
+
+/* Dark theme styles */
+body.light-theme {
+    background-color: blue !important;
+}
+
+pre.light-theme .kn { color: #2838b0 !important} /* Keyword.Namespace */
+pre.light-theme .kp { color: #2838b0 !important} /* Keyword.Pseudo */
+pre.light-theme .kr { color: #2838b0 !important} /* Keyword.Reserved */
+pre.light-theme .kt { color: #2838b0; font-style: italic !important} /* Keyword.Type */
+pre.light-theme .m { color: #444444 !important} /* Literal.Number */
+pre.light-theme .s { color: #b83838 !important} /* Literal.String */
+pre.light-theme .na { color: #388038 !important} /* Name.Attribute */
+pre.light-theme .nb { color: #388038 !important} /* Name.Builtin */
+pre.light-theme .nc { color: #287088 !important} /* Name.Class */
+pre.light-theme .no { color: #b85820 !important} /* Name.Constant */
+pre.light-theme .nd { color: #287088 !important} /* Name.Decorator */
+pre.light-theme .ni { color: #709030 !important} /* Name.Entity */
+pre.light-theme .ne { color: #908828 !important} /* Name.Exception */
+pre.light-theme .nf { color: #785840 !important} /* Name.Function */
+pre.light-theme .nl { color: #289870 !important} /* Name.Label */
+pre.light-theme .nn { color: #289870 !important} /* Name.Namespace */
+pre.light-theme .nt { color: #2838b0 !important} /* Name.Tag */
+pre.light-theme .nv { color: #b04040 !important} /* Name.Variable */
+pre.light-theme .ow { color: #a848a8 !important} /* Operator.Word */
+pre.light-theme .pm { color: #888888 !important} /* Punctuation.Marker */
+pre.light-theme .w { color: #a89028 !important} /* Text.Whitespace */
+pre.light-theme .mb { color: #444444 !important} /* Literal.Number.Bin */
+pre.light-theme .mf { color: #444444 !important} /* Literal.Number.Float */
+pre.light-theme .mh { color: #444444 !important} /* Literal.Number.Hex */
+pre.light-theme .mi { color: #444444 !important} /* Literal.Number.Integer */
+pre.light-theme .mo { color: #444444 !important} /* Literal.Number.Oct */
+pre.light-theme .sa { color: #444444 !important} /* Literal.String.Affix */
+pre.light-theme .sb { color: #b83838 !important} /* Literal.String.Backtick */
+pre.light-theme .sc { color: #a848a8 !important} /* Literal.String.Char */
+pre.light-theme .dl { color: #b85820 !important} /* Literal.String.Delimiter */
+pre.light-theme .sd { color: #b85820; font-style: italic !important} /* Literal.String.Doc */
+pre.light-theme .s2 { color: #b83838 !important} /* Literal.String.Double */
+pre.light-theme .se { color: #709030 !important} /* Literal.String.Escape */
+pre.light-theme .sh { color: #b83838 !important} /* Literal.String.Heredoc */
+pre.light-theme .si { color: #b83838; text-decoration: underline !important} /* Literal.String.Interpol */
+pre.light-theme .sx { color: #a848a8 !important} /* Literal.String.Other */
+pre.light-theme .sr { color: #a848a8 !important} /* Literal.String.Regex */
+pre.light-theme .s1 { color: #b83838 !important} /* Literal.String.Single */
+pre.light-theme .ss { color: #b83838 !important} /* Literal.String.Symbol */
+pre.light-theme .bp { color: #388038; font-style: italic !important} /* Name.Builtin.Pseudo */
+pre.light-theme .fm { color: #b85820 !important} /* Name.Function.Magic */
+pre.light-theme .vc { color: #b04040 !important} /* Name.Variable.Class */
+pre.light-theme .vg { color: #908828 !important} /* Name.Variable.Global */
+pre.light-theme .vi { color: #b04040 !important} /* Name.Variable.Instance */
+pre.light-theme .vm { color: #b85820 !important} /* Name.Variable.Magic */
+pre.light-theme .il { color: #444444 !important} /* Literal.Number.Integer.Long */
+pre.light-theme .n { color: #444444 !important} /* Misc */
+pre.light-theme .o { color: #444 !important} /* Misc */
+pre.light-theme .p { color: #444 !important} /* Misc */
+pre.light-theme .k { color: #a848a8 !important} /* Misc */
+pre.light-theme .kc { color: #2838b0 !important} /* Misc */
