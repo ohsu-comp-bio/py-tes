@@ -9,7 +9,19 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        version: ["3.7", "3.8", "3.9", "3.10", "3.11", "3.12"]
+        # TODO: Handle multiple TES versions here, currently we're only testing against TES 1.1
+        # - py-tes v1.0 — TES 1.0
+        # - py-tes v1.1 — TES 1.1
+        # tes-version:
+        #   - "1.0"
+        #   - "1.1"
+        python-version:
+          - "3.7"
+          - "3.8"
+          - "3.9"
+          - "3.10"
+          - "3.11"
+          - "3.12"
 
     steps:
       - name: Check out code
@@ -18,7 +30,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: ${{ matrix.version }}
+          python-version: ${{ matrix.python-version }}
 
       - name: Install requirements
         run: |
@@ -42,6 +54,6 @@ jobs:
 
       - name: Run integration tests
         run: |
-          /bin/bash -c "$(curl -fsSL https://github.com/ohsu-comp-bio/funnel/releases/download/0.11.0-rc.5/install.sh)" -- 0.11.0-rc.5
+          /bin/bash -c "$(curl -fsSL https://github.com/ohsu-comp-bio/funnel/releases/latest/download/install.sh)"
           funnel server --LocalStorage.AllowedDirs $HOME run &
           pytest tests/integration
