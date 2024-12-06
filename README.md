@@ -1,11 +1,8 @@
 # py-tes 🐍
 
 [![Build Status][build-badge]][build]
-
 [![Test Coverage][coverage-badge]][coverage]
-
 [![License][license-badge]][license]
-
 [![PyPI][pypi-badge]][pypi]
 
 [build-badge]: https://img.shields.io/github/actions/workflow/status/ohsu-comp-bio/py-tes/tests.yml?logo=github
