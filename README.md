@@ -4,7 +4,9 @@
 
 [![Test Coverage][coverage-badge]][coverage]
 
-[![License](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![License][license-badge]][license]
+
+[![PyPI][pypi-badge]][pypi]
 
 [build-badge]: https://img.shields.io/github/actions/workflow/status/ohsu-comp-bio/py-tes/tests.yml?logo=github
 [build]: https://github.com/ohsu-comp-bio/py-tes/actions
@@ -12,17 +14,23 @@
 [coverage]: https://coveralls.io/github/ohsu-comp-bio/py-tes?branch=master
 [license-badge]: https://img.shields.io/badge/License-MIT-yellow.svg
 [license]: https://opensource.org/licenses/MIT
+[pypi-badge]: https://img.shields.io/pypi/v/py-tes
+[pypi]: https://pypi.org/project/py-tes/
 
-_py-tes_ is a library for interacting with servers implementing the
-[GA4GH Task Execution
-Schema](https://github.com/ga4gh/task-execution-schemas).
+_py-tes_ is a library for interacting with servers implementing the [GA4GH Task Execution Schema](https://github.com/ga4gh/task-execution-schemas).
 
 # Quick Start ⚡
 
-| TES version | py-tes version | Example Notebook (*Coming soon!*)             |
-|-------------|----------------|-----------------------------------------------|
-| 1.1.0       | 1.1.0          | [![Open in Colab][colab-badge]][colab-v1.1.0] |
-| 1.0.0       | 1.0.0          | [![Open in Colab][colab-badge]][colab-v1.0.0] |
+| TES version     | py-tes version         | Example Notebook (_Coming soon!_)             |
+|-----------------|------------------------|-----------------------------------------------|
+| [1.1][tes-v1.1] | [1.1.0][py-tes-v1.1.0] | [![Open in Colab][colab-badge]][colab-v1.1.0] |
+| [1.0][tes-v1.1] | [1.0.0][py-tes-v1.0.0] | [![Open in Colab][colab-badge]][colab-v1.0.0] |
+
+[tes-v1.1]: https://github.com/ga4gh/task-execution-schemas/releases/tag/v1.1
+[tes-v1.0]: https://github.com/ga4gh/task-execution-schemas/releases/tag/v1.1
+
+[py-tes-v1.1.0]: https://github.com/ohsu-comp-bio/py-tes/releases/tag/1.1.0
+[py-tes-v1.0.0]: https://github.com/ohsu-comp-bio/py-tes/releases/tag/1.0.0
 
 [colab-badge]: https://colab.research.google.com/assets/colab-badge.svg
 [colab-v1.1.0]: https://colab.research.google.com/github/ohsu-comp-bio/py-tes/blob/develop/examples/v1_1_0.ipynb
