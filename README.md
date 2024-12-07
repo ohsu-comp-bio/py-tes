@@ -30,8 +30,8 @@ _py-tes_ is a library for interacting with servers implementing the [GA4GH Task 
 [py-tes-v1.1]: https://github.com/ohsu-comp-bio/py-tes/releases/latest
 [py-tes-v1.0]: https://github.com/ohsu-comp-bio/py-tes/releases/tag/1.0.0
 [colab-badge]: https://colab.research.google.com/assets/colab-badge.svg
-[colab-v1.1]: https://colab.research.google.com/github/ohsu-comp-bio/py-tes/blob/develop/examples/v1_1.ipynb
-[colab-v1.0]: https://colab.research.google.com/github/ohsu-comp-bio/py-tes/blob/develop/examples/v1_0.ipynb
+[colab-v1.1]: https://colab.research.google.com/github/ohsu-comp-bio/py-tes/blob/master/examples/v1_1.ipynb
+[colab-v1.0]: https://colab.research.google.com/github/ohsu-comp-bio/py-tes/blob/master/examples/v1_0.ipynb
 
 # Installation 🌀
 
