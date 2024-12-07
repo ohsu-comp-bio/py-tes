@@ -181,17 +181,13 @@ Output:
 True
 ```
 
+# Credits
+
+This project would not be possible without our collaborators at the University of Basel, Microsoft Research and AI, and the [The GA4GH Cloud Workstream](https://www.ga4gh.org/work_stream/cloud/) Team — thank you! 🙌
+
 # Additional Resources 📚
 
-- [ga4gh-tes](https://github.com/microsoft/ga4gh-tes) : C# implementation of the GA4GH TES API; provides distributed batch task execution on Microsoft Azure
-
-- [cwl-tes](https://github.com/ohsu-comp-bio/cwl-tes) : cwl-tes submits your tasks to a TES server. Task submission is parallelized when possible.
-
-- [Funnel](https://ohsu-comp-bio.github.io/funnel/): Funnel is a toolkit for distributed task execution with a simple API.
-
-- [Snakemake](https://snakemake.github.io/) : The Snakemape workflow management system is a tool to create reproducible and scalable data analyses
-
-- [Nextflow](https://www.nextflow.io/): Nextflow enables scalable and reproducible scientific workflows using software containers. It allows the adaptation of pipelines written in the most common scripting languages.
+- [ga4gh-sdk](https://github.com/elixir-cloud-aai/ga4gh-sdk): Generic SDK and CLI for GA4GH API services 
 
 - [GA4GH TES](https://www.ga4gh.org/product/task-execution-service-tes/): Main page for the Task Execution Schema — a standardized schema and API for describing batch execution tasks.
 
