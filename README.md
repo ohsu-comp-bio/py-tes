@@ -18,20 +18,20 @@ _py-tes_ is a library for interacting with servers implementing the [GA4GH Task 
 
 # Quick Start ⚡
 
-| TES version     | py-tes version + branch                               | Example Notebook (_Coming soon!_)             |
-| --------------- | ----------------------------------------------------- | --------------------------------------------- |
-| [1.1][tes-v1.1] | [1.1.0][py-tes-v1.1.0] ([master][master])             | [![Open in Colab][colab-badge]][colab-v1.1.0] |
-| [1.0][tes-v1.1] | [1.0.0][py-tes-v1.0.0] ([release/v1.0][release/v1.0]) | [![Open in Colab][colab-badge]][colab-v1.0.0] |
+| TES version     | py-tes version + branch                             | Example Notebook (_Coming soon!_)           |
+| --------------- | --------------------------------------------------- | ------------------------------------------- |
+| [1.1][tes-v1.1] | [1.1.x][py-tes-v1.1] ([master][master])             | [![Open in Colab][colab-badge]][colab-v1.1] |
+| [1.0][tes-v1.1] | [1.0.0][py-tes-v1.0] ([release/v1.0][release/v1.0]) | [![Open in Colab][colab-badge]][colab-v1.0] |
 
 [master]: https://github.com/ohsu-comp-bio/py-tes/tree/master
 [release/v1.0]: https://github.com/ohsu-comp-bio/py-tes/tree/release/v1.0
 [tes-v1.1]: https://github.com/ga4gh/task-execution-schemas/releases/tag/v1.1
 [tes-v1.0]: https://github.com/ga4gh/task-execution-schemas/releases/tag/v1.0
-[py-tes-v1.1.0]: https://github.com/ohsu-comp-bio/py-tes/releases/tag/1.1.0
-[py-tes-v1.0.0]: https://github.com/ohsu-comp-bio/py-tes/releases/tag/1.0.0
+[py-tes-v1.1]: https://github.com/ohsu-comp-bio/py-tes/releases/latest
+[py-tes-v1.0]: https://github.com/ohsu-comp-bio/py-tes/releases/tag/1.0.0
 [colab-badge]: https://colab.research.google.com/assets/colab-badge.svg
-[colab-v1.1.0]: https://colab.research.google.com/github/ohsu-comp-bio/py-tes/blob/develop/examples/v1_1_0.ipynb
-[colab-v1.0.0]: https://colab.research.google.com/github/ohsu-comp-bio/py-tes/blob/develop/examples/v1_0_0.ipynb
+[colab-v1.1]: https://colab.research.google.com/github/ohsu-comp-bio/py-tes/blob/develop/examples/v1_1.ipynb
+[colab-v1.0]: https://colab.research.google.com/github/ohsu-comp-bio/py-tes/blob/develop/examples/v1_0.ipynb
 
 # Installation 🌀
 
