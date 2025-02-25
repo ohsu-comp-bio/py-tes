@@ -33,17 +33,15 @@ _py-tes_ is a library for interacting with servers implementing the [GA4GH Task 
 [colab-v1.1]: https://colab.research.google.com/github/ohsu-comp-bio/py-tes/blob/master/examples/v1_1.ipynb
 [colab-v1.0]: https://colab.research.google.com/github/ohsu-comp-bio/py-tes/blob/master/examples/v1_0.ipynb
 
-# Installation 🌀
+# Install 🌀
 
 Install `py-tes` from [PyPI](https://pypi.org/project/py-tes/) and run it in your script:
 
 ```sh
 ➜ pip install py-tes
-
-➜ python example.py
 ```
 
-## example.py 🐍
+# Quick Start ⚡
 
 ```py
 import tes
