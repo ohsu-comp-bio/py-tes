@@ -220,8 +220,8 @@ class Resources(Base):
     zones: Optional[List[str]] = attrib(
         default=None, converter=strconv, validator=optional(list_of(str))
     )
-    backend_parameters: Optional[List[str]] = attrib(
-        default=None, converter=strconv, validator=optional(instance_of(list))
+    backend_parameters: Optional[Dict[str, str]] = attrib(
+        default=None, converter=strconv, validator=optional(instance_of(map))
     )
     backend_parameters_strict: Optional[bool] = attrib(
         default=None, validator=optional(instance_of(bool))
