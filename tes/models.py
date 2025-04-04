@@ -221,7 +221,7 @@ class Resources(Base):
         default=None, converter=strconv, validator=optional(list_of(str))
     )
     backend_parameters: Optional[Dict[str, str]] = attrib(
-        default=None, validator=optional(instance_of(map))
+        default=None, validator=optional(instance_of(dict))
     )
     backend_parameters_strict: Optional[bool] = attrib(
         default=None, validator=optional(instance_of(bool))
