@@ -187,6 +187,9 @@ class Output(Base):
     path: Optional[str] = attrib(
         default=None, converter=strconv, validator=optional(instance_of(str))
     )
+    path_prefix: Optional[str] = attrib(
+        default=None, converter=strconv, validator=optional(instance_of(str))
+    )
     type: str = attrib(
         default="FILE", validator=in_(["FILE", "DIRECTORY"])
     )
@@ -217,8 +220,8 @@ class Resources(Base):
     zones: Optional[List[str]] = attrib(
         default=None, converter=strconv, validator=optional(list_of(str))
     )
-    backend_parameters: Optional[List[str]] = attrib(
-        default=None, converter=strconv, validator=optional(instance_of(list))
+    backend_parameters: Optional[Dict[str, str]] = attrib(
+        default=None, validator=optional(instance_of(dict))
     )
     backend_parameters_strict: Optional[bool] = attrib(
         default=None, validator=optional(instance_of(bool))
@@ -333,8 +336,19 @@ class Task(Base):
     state: Optional[str] = attrib(
         default=None,
         validator=optional(in_(
-            ["UNKNOWN", "QUEUED", "INITIALIZING", "RUNNING", "COMPLETE",
-             "CANCELED", "EXECUTOR_ERROR", "SYSTEM_ERROR"]
+            [
+                "UNKNOWN",
+                "QUEUED",
+                "INITIALIZING",
+                "RUNNING",
+                "PAUSED",
+                "COMPLETE",
+                "EXECUTOR_ERROR",
+                "SYSTEM_ERROR",
+                "CANCELED",
+                "CANCELING",
+                "PREEMPTED",
+            ]
         ))
     )
     name: Optional[str] = attrib(
