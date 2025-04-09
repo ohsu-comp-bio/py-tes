@@ -36,4 +36,4 @@ __all__ = [
     "ServiceInfo"
 ]
 
-__version__ = "1.1.1-rc.2"
+__version__ = "1.1.1"
